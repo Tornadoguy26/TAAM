@@ -1,7 +1,7 @@
 # PULL_REQUEST_TEMPLATE
 
-PR Author: 
-PR Reviewer:
+PR Author:            
+PR Reviewer:  
 Description of issue and request:
 
 ## Type of change
