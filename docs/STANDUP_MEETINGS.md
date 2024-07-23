@@ -2,7 +2,7 @@
 
 **Users**: ``@BobbyAdiSalim``, ``@ddesargues``, ``@Tornadoguy26``, ``@RamyPoe``, ``@RRDewa``, ``@valdyoktavian``
 
-Daily Documentation of progess and tasks for the development of this app.
+Documentation of progess and tasks for the development of this app.
 
 ## Logs
 
@@ -30,6 +30,21 @@ Daily Documentation of progess and tasks for the development of this app.
   **2. What will we finish before the next meeting?**
 
     Further understanding of the Android Framework and Firebase.
+
+  **3. Are there any obstacles? If so, what are they?**
+     
+    N/A.
+##
+
+### 2024-07-22
+
+  **1. What have we completed since the last meeting?**
+    
+    Launched App + added Firebase.
+    
+  **2. What will we finish before the next meeting?**
+
+    Design table and add features and UI details.
 
   **3. Are there any obstacles? If so, what are they?**
      
