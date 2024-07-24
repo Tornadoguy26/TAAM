@@ -4,6 +4,9 @@ public class User {
     private String username;
     private String passhash;
 
+    // Necessary for firebase conversion
+    public User() {}
+
     public User(String username, String passhash) {
         this.username = username;
         this.passhash = passhash;

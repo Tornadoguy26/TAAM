@@ -7,6 +7,9 @@ public class Item {
     private String period;
     private String description;
 
+    // Necessary for firebase conversion
+    public Item() {}
+
     public Item(int lotNumber, String name, String category, String period, String description) {
         this.lotNumber = lotNumber;
         this.name = name;
@@ -29,4 +32,5 @@ public class Item {
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+
 }
