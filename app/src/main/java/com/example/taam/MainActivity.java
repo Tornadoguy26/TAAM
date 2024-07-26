@@ -46,17 +46,6 @@ public class MainActivity extends AppCompatActivity {
         db = FirebaseDatabase.getInstance("https://taam-1c732-default-rtdb.firebaseio.com/");
         DatabaseReference dbRef = db.getReference("Items");
 
-        /*
-        Item item1 = new Item(10101, "vase", "Qing", "Prehistoric", "very lovely");
-        dbRef.child("" + item1.getLotNumber()).setValue(item1);
-
-        Item item2 = new Item(20202, "bottle", "Qing", "Prehistoric", "lots of water");
-        dbRef.child("" + item2.getLotNumber()).setValue(item2);
-
-        Item item3 = new Item(30303, "laptop", "Qing", "Jurrasic", "refurbished like new");
-        dbRef.child("" + item3.getLotNumber()).setValue(item3);
-         */
-
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         itemDataSet = new ArrayList<>();
@@ -68,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Log.d("[TAAM]", "\nNEW DATA: " + snapshot.getValue());
                 itemDataSet.clear();
 
                 for (DataSnapshot snap : snapshot.getChildren()) {
@@ -88,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
                 // Handle possible errors
             }
         });
-
 
 
     }

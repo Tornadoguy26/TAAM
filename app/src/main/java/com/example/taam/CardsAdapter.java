@@ -76,26 +76,21 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Log.d("[TAAM]", "Element " + position + "set");
+        Log.d("[TAAM]", "Element " + position + " set");
         holder.getNameTextView().setText(mDataSet.get(position).getName());
         holder.getDescTextView().setText(mDataSet.get(position).getDescription());
 
-        final long TWO_MEGABYTE = 2 * 1024 * 1024;
+        final long ONE_MEGABYTE = 1024 * 1024;
         StorageReference photoReference = holder.storageReference.child(
-                String.valueOf(mDataSet.get(holder.getAdapterPosition()).getLotNumber()) + ".jpg"
+                mDataSet.get(holder.getAdapterPosition()).getLotNumber() + ".png"
         );
-        photoReference.getBytes(TWO_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                holder.getImageView().setImageBitmap(bmp);
-                Log.d("[TAAM]", "Image " + mDataSet.get(holder.getAdapterPosition()).getLotNumber() + " found!");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("[TAAM]", "Image " + mDataSet.get(holder.getAdapterPosition()).getLotNumber() + " not found");
-            }
+
+        photoReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            holder.getImageView().setImageBitmap(bmp);
+
+        }).addOnFailureListener(e -> {
+            // Handle potential failures
         });
 
     }

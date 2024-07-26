@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="10dp"
@@ -29,7 +30,7 @@
             android:id="@+id/imageView"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_margin="10dp"
+            android:layout_margin="5dp"
             android:contentDescription="@string/app_name"
             android:padding="5dp"
             android:src="@drawable/ic_launcher_background" />
@@ -45,7 +46,9 @@
             android:text="@string/loading"
             android:textColor="@color/black"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:paddingRight="20dp"
+            android:textStyle="bold"
+            tools:ignore="RtlHardcoded,RtlSymmetry" />
 
         <TextView
             android:id="@+id/descTextView"
@@ -55,9 +58,13 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
+            android:paddingRight="20dp"
             android:layout_toEndOf="@id/imageView"
             android:drawablePadding="2dp"
-            android:text="@string/loading" />
+            android:ellipsize="end"
+            android:maxLines="6"
+            android:text="@string/loading"
+            tools:ignore="RtlHardcoded,RtlSymmetry" />
 <!--            android:maxHeight="@dimen/card_height"-->
 
     </RelativeLayout>
