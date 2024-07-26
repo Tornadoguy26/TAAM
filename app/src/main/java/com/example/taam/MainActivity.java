@@ -4,8 +4,12 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,9 +19,12 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button adminBTN;
-    Dialog logindialog;
-    Button adminCancelBTN, adminLoginBTN;
+    private EditText auser, apassword;
+    private CheckBox togglevis;
+
+    private Button adminBTN;
+    private Dialog logindialog;
+    private Button adminCancelBTN, adminLoginBTN;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +47,10 @@ public class MainActivity extends AppCompatActivity {
         adminCancelBTN = logindialog.findViewById(R.id.BackButton);
         adminLoginBTN = logindialog.findViewById(R.id.LogButton);
 
+        auser = logindialog.findViewById(R.id.LogUsername);
+        apassword = logindialog.findViewById(R.id.LogPassword);
+        togglevis = logindialog.findViewById(R.id.PasswordVis);
+
         adminBTN.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -58,6 +69,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
 
+            }
+        });
+
+        togglevis.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(CompoundButton v, boolean flag){
+                if(flag){
+                    apassword.setTransformationMethod(null);
+                } else {
+                    apassword.setTransformationMethod(new PasswordTransformationMethod());
+                }
             }
         });
     }

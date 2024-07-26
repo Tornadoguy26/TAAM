@@ -100,7 +100,7 @@
 
         <Button
             android:id="@+id/LogButton"
-            android:layout_width="251dp"
+            android:layout_width="285dp"
             android:layout_height="51dp"
             android:background="@drawable/logintext"
             android:text="Login"
@@ -108,10 +108,10 @@
             android:textSize="22sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/LogIncorrect"
-            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintHorizontal_bias="0.538"
             app:layout_constraintStart_toStartOf="@+id/LogIncorrect"
             app:layout_constraintTop_toBottomOf="@+id/LogIncorrect"
-            app:layout_constraintVertical_bias="0.19" />
+            app:layout_constraintVertical_bias="0.152" />
 
         <TextView
             android:id="@+id/LogIncorrect"
@@ -120,9 +120,20 @@
             android:layout_marginTop="12dp"
             android:text="TextView"
             app:layout_constraintEnd_toEndOf="@+id/LogPassword"
-            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintHorizontal_bias="0.578"
             app:layout_constraintStart_toStartOf="@+id/LogPassword"
             app:layout_constraintTop_toBottomOf="@+id/LogPassword" />
+
+        <CheckBox
+            android:id="@+id/PasswordVis"
+            android:layout_width="74dp"
+            android:layout_height="49dp"
+            app:layout_constraintBottom_toBottomOf="@+id/LogPassword"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.644"
+            app:layout_constraintStart_toStartOf="@+id/LogPassword"
+            app:layout_constraintTop_toTopOf="@+id/LogPassword"
+            app:layout_constraintVertical_bias="1.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
