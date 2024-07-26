@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardElevation="10dp"
+    app:cardCornerRadius="19dp"
+    tools:context=".MainActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="376dp"
+        android:layout_height="399dp"
+        android:background="?attr/colorAccent">
+
+        <TextView
+            android:id="@+id/logHeader"
+            android:layout_width="277dp"
+            android:layout_height="55dp"
+            android:background="@drawable/logintitle"
+            android:fontFamily="@font/adlam_display"
+            android:text="Admin Login"
+            android:textAlignment="center"
+            android:textColor="#381673"
+            android:textSize="35sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.504"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.062" />
+
+        <EditText
+            android:id="@+id/LogUsername"
+            android:layout_width="191dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="44dp"
+            android:background="@drawable/logintext"
+            android:drawableStart="@drawable/ic_action_name"
+            android:ems="10"
+            android:hint="Enter Username"
+            android:inputType="textEmailAddress"
+            android:textColor="#3DA4CE"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@+id/logHeader"
+            app:layout_constraintStart_toStartOf="@+id/logHeader"
+            app:layout_constraintTop_toBottomOf="@+id/logHeader" />
+
+
+        <Button
+            android:id="@+id/BackButton"
+            android:layout_width="81dp"
+            android:layout_height="50dp"
+            android:background="@drawable/logintext"
+            android:text="Back"
+            android:textAlignment="viewStart"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.997" />
+
+        <TextView
+            android:id="@+id/LogSubHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Welcome Back! Sign in to continue acess"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@+id/LogUsername"
+            app:layout_constraintEnd_toEndOf="@+id/logHeader"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="@+id/logHeader"
+            app:layout_constraintTop_toBottomOf="@+id/logHeader"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <EditText
+            android:id="@+id/LogPassword"
+            android:layout_width="191dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="13dp"
+            android:background="@drawable/logintext"
+            android:drawableStart="@drawable/ic_password"
+            android:ems="10"
+            android:hint="Enter Password"
+            android:inputType="textPassword"
+            android:textColor="#3DA4CE"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.54"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/LogUsername"
+            app:layout_constraintVertical_bias="0.059"
+            app:passwordToggleEnabled="true" />
+
+        <Button
+            android:id="@+id/LogButton"
+            android:layout_width="251dp"
+            android:layout_height="51dp"
+            android:background="@drawable/logintext"
+            android:text="Login"
+            android:textAlignment="center"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/LogIncorrect"
+            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintStart_toStartOf="@+id/LogIncorrect"
+            app:layout_constraintTop_toBottomOf="@+id/LogIncorrect"
+            app:layout_constraintVertical_bias="0.19" />
+
+        <TextView
+            android:id="@+id/LogIncorrect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="@+id/LogPassword"
+            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintStart_toStartOf="@+id/LogPassword"
+            app:layout_constraintTop_toBottomOf="@+id/LogPassword" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
