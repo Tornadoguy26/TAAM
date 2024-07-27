@@ -1,6 +1,7 @@
 package com.example.taam;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -10,12 +11,15 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,9 +29,10 @@ public class MainActivity extends AppCompatActivity {
     private Button adminBTN;
     private Dialog logindialog;
     private Button adminCancelBTN, adminLoginBTN;
+    private LoginPresenter loginPresenter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
@@ -46,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         adminCancelBTN = logindialog.findViewById(R.id.BackButton);
         adminLoginBTN = logindialog.findViewById(R.id.LogButton);
+        loginPresenter = new LoginPresenter(this);
 
         auser = logindialog.findViewById(R.id.LogUsername);
         apassword = logindialog.findViewById(R.id.LogPassword);
@@ -68,7 +74,10 @@ public class MainActivity extends AppCompatActivity {
         adminLoginBTN.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-
+                String email = auser.getText().toString().trim();
+                String password = apassword.getText().toString().trim();
+                User user = new User(email, password);
+                loginPresenter.login(user);
             }
         });
 
@@ -82,5 +91,22 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void onLoginSuccess(){
+        TextView loginStatus = logindialog.findViewById(R.id.LogIncorrect);
+        loginStatus.setText("Login Successful");
+        loginStatus.setTextColor(Color.GREEN);
+    }
+
+    public void onLoginFailure(){
+        TextView loginStatus = logindialog.findViewById(R.id.LogIncorrect);
+        loginStatus.setText("Login Failed: invalid credentials");
+        loginStatus.setTextColor(Color.RED);
+    }
+
+    public void switchToAdmin(){
+        Intent intent = new Intent(MainActivity.this, MockAdminView.class);
+        startActivity(intent);
     }
 }
