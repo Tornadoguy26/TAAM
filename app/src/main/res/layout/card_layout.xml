@@ -62,10 +62,17 @@
             android:layout_toEndOf="@id/imageView"
             android:drawablePadding="2dp"
             android:ellipsize="end"
-            android:maxLines="6"
             android:text="@string/loading"
             tools:ignore="RtlHardcoded,RtlSymmetry" />
-<!--            android:maxHeight="@dimen/card_height"-->
 
+        <!--            android:maxHeight="@dimen/card_height"-->
+        <CheckBox
+            android:id="@+id/itemCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="350dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:visibility="gone" />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
