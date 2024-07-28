@@ -50,3 +50,33 @@ Documentation of progess and tasks for the development of this app.
      
     N/A.
 ##
+
+### 2024-07-24
+
+  **1. What have we completed since the last meeting?**
+    
+    Diagram and visual of app features and design.
+    
+  **2. What will we finish before the next meeting?**
+
+    User Stories 2 and 17.
+
+  **3. Are there any obstacles? If so, what are they?**
+     
+    N/A.
+##
+
+### 2024-07-27
+
+  **1. What have we completed since the last meeting?**
+    
+    User stories 2, 3, 14 and 17 (Admin login Ui and functionality fb=irebase realtime database with card display + scroll).
+    
+  **2. What will we finish before the next meeting?**
+
+    Sprint 1.
+
+  **3. Are there any obstacles? If so, what are they?**
+     
+    N/A.
+##
