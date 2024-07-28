@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,14 +25,19 @@ import java.util.ArrayList;
 public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> {
 
     private final ArrayList<Item> mDataSet;
+    private int maxLine;
+
+    public void setMaxLine(int maxLine){
+        this.maxLine = maxLine;
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         private final StorageReference storageReference;
-
         private final TextView nameTextView;
         private final TextView descTextView;
         private final ImageView imageView;
+        private final CheckBox checkBox;
 
         public ViewHolder(View v) {
             super(v);
@@ -46,11 +53,9 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
             nameTextView = (TextView) v.findViewById(R.id.nameTextView);
             descTextView = (TextView) v.findViewById(R.id.descTextView);
             imageView = (ImageView) v.findViewById(R.id.imageView);
-
+            checkBox = (CheckBox) v.findViewById(R.id.itemCheckBox);
             storageReference = FirebaseStorage.getInstance().getReference();
-
         }
-
         public TextView getNameTextView() { return nameTextView; }
         public TextView getDescTextView() { return descTextView; }
         public ImageView getImageView() { return imageView; }
@@ -92,13 +97,31 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
         }).addOnFailureListener(e -> {
             // Handle potential failures
         });
-
+        if(this.maxLine != 0) {
+            holder.descTextView.setMaxLines(this.maxLine);
+        }
+        holder.checkBox.setVisibility(View.VISIBLE);
+        holder.checkBox.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if (holder.checkBox.isChecked()) {
+                    if(MainActivity.posNumberChecked.isEmpty()){
+                        MainActivity.clickViewButton.setVisibility(View.VISIBLE);
+                    }
+                    MainActivity.posNumberChecked.add(mDataSet.get(holder.getAdapterPosition()));
+                } else {
+                    MainActivity.posNumberChecked.remove(mDataSet.get(holder.getAdapterPosition()));
+                    if(MainActivity.posNumberChecked.isEmpty()){
+                        MainActivity.clickViewButton.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return mDataSet.size();
     }
-
 
 }
