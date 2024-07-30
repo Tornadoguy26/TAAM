@@ -1,11 +1,12 @@
 package com.example.taam;
 
+import com.example.taam.structures.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginPresenter {
-    private MainActivity mainActivity;
-    private FirebaseAuth auth;
+    private final MainActivity mainActivity;
+    private final FirebaseAuth auth;
 
     public LoginPresenter(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
@@ -17,7 +18,7 @@ public class LoginPresenter {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         mainActivity.onLoginSuccess();
-                        mainActivity.switchToAdmin();
+                        mainActivity.switchAdminStatus(true);
                     } else {
                         mainActivity.onLoginFailure();
                     }
