@@ -39,6 +39,10 @@ import java.util.ArrayList;
 
 
 
+import android.widget.*;
+
+import android.content.Intent;
+
 public class MainActivity extends AppCompatActivity {
 
     // LOGIN =================
@@ -123,6 +127,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button b = findViewById(R.id.addButton);
+        b.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AddItemActivity.class);
+            startActivity(intent);
+        });
+
         FirebaseDatabase db = FirebaseDatabase.getInstance("https://taam-1c732-default-rtdb.firebaseio.com/");
         DatabaseReference dbRef = db.getReference("Items");
 
@@ -156,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
                 // Handle possible errors
             }
         });
-      
+
     }
 
     public void onLoginSuccess(){
