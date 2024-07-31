@@ -99,7 +99,14 @@ public class MainActivity extends AppCompatActivity {
             else { logindialog.show(); }
         });
 
-        adminCancelBTN.setOnClickListener(v -> logindialog.dismiss());
+        adminCancelBTN.setOnClickListener(v -> {
+            auser.setText("");
+            apassword.setText("");
+            togglevis.setChecked(false);
+            TextView loginStatus = logindialog.findViewById(R.id.LogIncorrect);
+            loginStatus.setText("");
+            logindialog.dismiss();
+        });
 
         adminLoginBTN.setOnClickListener(v -> {
             String email = auser.getText().toString().trim();
