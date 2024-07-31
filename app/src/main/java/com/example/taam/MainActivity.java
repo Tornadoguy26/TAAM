@@ -39,10 +39,6 @@ import java.util.ArrayList;
 
 
 
-import android.widget.*;
-
-import android.content.Intent;
-
 public class MainActivity extends AppCompatActivity {
 
     // LOGIN =================
