@@ -15,8 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.taam.structures.Item;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -30,6 +28,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
     public void setMaxLine(int maxLine){
         this.maxLine = maxLine;
     }
+    private final ArrayList<Item> checkedItems;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -42,23 +41,27 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
         public ViewHolder(View v) {
             super(v);
 
+            nameTextView = v.findViewById(R.id.nameTextView);
+            descTextView = v.findViewById(R.id.descTextView);
+            imageView = v.findViewById(R.id.imageView);
+            checkBox = v.findViewById(R.id.checkBox);
+
             // Define click listener for the ViewHolder's View.
+            /*
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d("[TAAM]", "Element " + getAdapterPosition() + " clicked.");
+                    checkBox.toggle();
                 }
             });
+             */
 
-            nameTextView = (TextView) v.findViewById(R.id.nameTextView);
-            descTextView = (TextView) v.findViewById(R.id.descTextView);
-            imageView = (ImageView) v.findViewById(R.id.imageView);
-            checkBox = (CheckBox) v.findViewById(R.id.itemCheckBox);
             storageReference = FirebaseStorage.getInstance().getReference();
         }
         public TextView getNameTextView() { return nameTextView; }
         public TextView getDescTextView() { return descTextView; }
         public ImageView getImageView() { return imageView; }
+        public CheckBox getCheckBox() { return checkBox; }
     }
 
     /**
@@ -68,6 +71,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
      */
     public CardsAdapter(ArrayList<Item> dataSet) {
         mDataSet = dataSet;
+        checkedItems = new ArrayList<>();
     }
 
 
@@ -84,6 +88,14 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
         Log.d("[TAAM]", "Element " + position + " set");
         holder.getNameTextView().setText(mDataSet.get(position).getName());
         holder.getDescTextView().setText(mDataSet.get(position).getDescription());
+
+        holder.getCheckBox().setOnCheckedChangeListener(null);
+        holder.getCheckBox().setChecked(checkedItems.contains( mDataSet.get(position)) );
+
+        holder.getCheckBox().setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) { checkedItems.add(mDataSet.get(holder.getAdapterPosition())); }
+            else { checkedItems.remove(mDataSet.get(holder.getAdapterPosition())); }
+        });
 
         final long ONE_MEGABYTE = 1024 * 1024;
         StorageReference photoReference = holder.storageReference.child(

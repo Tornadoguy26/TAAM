@@ -38,15 +38,15 @@
         <!-- Text View to display Course Name -->
         <TextView
             android:id="@+id/nameTextView"
-            android:layout_width="match_parent"
+            android:layout_width="239dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_toEndOf="@id/imageView"
+            android:paddingRight="20dp"
             android:text="@string/loading"
             android:textColor="@color/black"
             android:textSize="18sp"
-            android:paddingRight="20dp"
             android:textStyle="bold"
             tools:ignore="RtlHardcoded,RtlSymmetry" />
 
@@ -65,14 +65,15 @@
             android:text="@string/loading"
             tools:ignore="RtlHardcoded,RtlSymmetry" />
 
-        <!--            android:maxHeight="@dimen/card_height"-->
         <CheckBox
-            android:id="@+id/itemCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="350dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:visibility="gone" />
+            android:id="@+id/checkBox"
+            android:layout_width="30dp"
+            android:layout_height="38dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="7dp"
+            android:layout_marginEnd="7dp"
+            android:layout_toEndOf="@+id/nameTextView" />
+        <!--            android:maxHeight="@dimen/card_height"-->
+
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
