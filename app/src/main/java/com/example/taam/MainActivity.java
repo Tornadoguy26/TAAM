@@ -1,6 +1,7 @@
 package com.example.taam;
 
-
+import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -16,6 +17,11 @@ import android.widget.TextView;
 
 import android.annotation.SuppressLint;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.PopupWindow;
 
 
 import androidx.activity.EdgeToEdge;
@@ -52,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Item> itemDataSet;
     private CardsAdapter cardsAdapter;
-
-
+    protected static ArrayList<Item> posNumberChecked;
+  
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,9 +140,14 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        posNumberChecked = new ArrayList<>();
         itemDataSet = new ArrayList<>();
         cardsAdapter = new CardsAdapter(itemDataSet);
+        cardsAdapter.setMaxLine(6);
         recyclerView.setAdapter(cardsAdapter);
+        clickViewButton = findViewById(R.id.buttonView);
+        clickViewButton.setVisibility(View.INVISIBLE);
+
 
         dbRef.addValueEventListener(new ValueEventListener() {
 
@@ -153,8 +164,6 @@ public class MainActivity extends AppCompatActivity {
                     itemDataSet.add(item);
                     cardsAdapter.notifyDataSetChanged();
                 }
-
-
             }
 
             @Override
@@ -162,7 +171,25 @@ public class MainActivity extends AppCompatActivity {
                 // Handle possible errors
             }
         });
+    }
 
+    public void buttonPopupView(View view){
+        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View viewPopupWindow = layoutInflater.inflate(R.layout.item_view_layout, null);
+
+        // Find and set up the RecyclerView in the popup window layout
+        RecyclerView recyclerItemsView = viewPopupWindow.findViewById(R.id.recycler_item_view);
+        if (recyclerItemsView != null) {
+            recyclerItemsView.setLayoutManager(new LinearLayoutManager(this));
+        } else {
+            Log.e("MainActivity", "RecyclerView not found in popup window layout");
+        }
+        CardsAdapter selectedCards = new CardsAdapter(posNumberChecked);
+        assert recyclerItemsView != null;
+        recyclerItemsView.setAdapter(selectedCards);
+        // Show the popup window
+        PopupWindow popupWindow = new PopupWindow(viewPopupWindow, 900, 1800, true);
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
     }
 
     public void onLoginSuccess(){
