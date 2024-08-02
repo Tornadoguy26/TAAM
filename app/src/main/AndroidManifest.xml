@@ -13,19 +13,10 @@
         android:theme="@style/Theme.TAAM"
         tools:targetApi="31">
         <activity
-            android:name=".FullPopupActivity"
-            android:exported="false" />
-        <activity
-            android:name=".structures.FullViewItems"
-            android:exported="false"
-            android:label="@string/title_activity_full_view_items"
-            android:theme="@style/Theme.TAAM.NoActionBar" />
-        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -33,6 +24,7 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
         <activity android:name=".AddItemActivity" />
+        <activity android:name=".ViewItemActivity" />
     </application>
 
 </manifest>

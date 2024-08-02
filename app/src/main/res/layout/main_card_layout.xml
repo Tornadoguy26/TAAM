@@ -14,7 +14,7 @@
     app:cardPreventCornerOverlap="true"
     app:cardUseCompatPadding="false">
 
-    <!-- In the above cardview widget cardelevation property will give elevation to your card view
+    <!-- In the above cardview widget card elevation property will give elevation to your card view
         card corner radius will provide radius to your card view card background color will give
         background color to your card view card max elevation will give the cardview maximum
         elevation card prevent corner overlap will add padding to CardView on v20 and before to
@@ -25,7 +25,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- ImageView to display our Course Image -->
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="100dp"
@@ -35,7 +34,6 @@
             android:padding="5dp"
             android:src="@drawable/ic_launcher_background" />
 
-        <!-- Text View to display Course Name -->
         <TextView
             android:id="@+id/nameTextView"
             android:layout_width="239dp"
@@ -61,6 +59,7 @@
             android:paddingRight="20dp"
             android:layout_toEndOf="@id/imageView"
             android:drawablePadding="2dp"
+            android:maxLines="6"
             android:ellipsize="end"
             android:text="@string/loading"
             tools:ignore="RtlHardcoded,RtlSymmetry" />

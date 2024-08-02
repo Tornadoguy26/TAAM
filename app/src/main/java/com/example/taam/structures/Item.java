@@ -1,6 +1,8 @@
 package com.example.taam.structures;
 
-public class Item {
+import java.io.Serializable;
+
+public class Item implements Serializable {
     private int lotNumber;
     private String name;
     private String category;
