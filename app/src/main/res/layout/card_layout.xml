@@ -67,7 +67,7 @@
             tools:ignore="RtlHardcoded,RtlSymmetry" />
 
         <CheckBox
-            android:id="@+id/checkBox"
+            android:id="@+id/reportCheckBox"
             android:layout_width="30dp"
             android:layout_height="38dp"
             android:layout_alignParentEnd="true"
