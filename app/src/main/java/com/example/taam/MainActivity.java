@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import android.annotation.SuppressLint;
 import android.util.Log;
 import android.widget.Toast;
+import android.Manifest;
 
 
 import androidx.activity.EdgeToEdge;
@@ -45,7 +47,6 @@ import java.util.ArrayList;
 // For requesting permissions
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 
 
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private CardsAdapter cardsAdapter;
 
     // GENERATE REPORT =================
-    private static final int PERMISSION_REQUEST_CODE = 200;
+    private static final int PERMISSION_REQUEST_CODE = 786;
     private Spinner reportSpinner;
     private EditText reportSearch;
     private CheckBox reportCheckBox;
@@ -197,33 +198,68 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+                reportSearch = reportView.findViewById(R.id.reportSearchInput);
+
+                reportCheckBox = reportView.findViewById(R.id.reportCheckBox);
+
+                TextView reportCheckDesc = reportView.findViewById(R.id.reportCheckBoxDesc);
+
                 reportSpinner = reportView.findViewById(R.id.reportSpinner);
                 ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(MainActivity.this,
                         R.array.report_options, android.R.layout.simple_spinner_item);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 reportSpinner.setAdapter(adapter);
-
-                reportCheckBox = reportView.findViewById(R.id.reportCheckBox);
-
-                reportSearch = reportView.findViewById(R.id.reportSearchInput);
+                reportSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        String selectedItem = parent.getItemAtPosition(position).toString();
+                        if (!selectedItem.equals("Select All Items")) {
+                            reportSearch.setVisibility(View.VISIBLE);
+                            reportSearch.setHint("Enter " + selectedItem.toLowerCase());
+                        } else {
+                            reportSearch.setVisibility(View.GONE);
+                        }
+                        if (selectedItem.equals("Lot Number") || selectedItem.equals("Name")) {
+                            reportCheckDesc.setVisibility(View.GONE);
+                            reportCheckBox.setChecked(false);
+                            reportCheckBox.setVisibility(View.GONE);
+                        } else {
+                            reportCheckDesc.setVisibility(View.VISIBLE);
+                            reportCheckBox.setVisibility(View.VISIBLE);
+                        }
+                    }
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        // Do nothing
+                    }
+                });
 
                 Button reportGenerate = reportView.findViewById(R.id.reportGenerateButton);
                 reportGenerate.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (ContextCompat.checkSelfPermission(MainActivity.this, WRITE_EXTERNAL_STORAGE)
+                        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE)
                                 != PackageManager.PERMISSION_GRANTED) {
+                            // Permission is not granted
+                            Log.d("PermissionDebug", "Requesting permission");
                             ActivityCompat.requestPermissions(MainActivity.this,
-                                    new String[]{WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                    PERMISSION_REQUEST_CODE);
+                            Log.d("PermissionDebug", "Requested permission");
                         } else {
                             mainPresenter.generateReport(reportSpinner.getSelectedItem().toString(),
-                                    reportSearch.getText().toString(), reportCheckBox.isChecked());
+                                    reportSearch.getText().toString(), reportCheckBox.isChecked(), itemDataSet);
                         }
                     }
                 });
                 reportDialog.show();
             }
         });
+
+    }
+
+    public void ReportPopUp() {
 
     }
 
@@ -249,15 +285,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
+        Log.d("PermissionDebug", "Request code: " + requestCode);
         if (requestCode == PERMISSION_REQUEST_CODE) {
-            // Check if the permission was granted
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission was granted, proceed with the action
+                Log.d("PermissionDebug", "Permission granted");
                 mainPresenter.generateReport(reportSpinner.getSelectedItem().toString(),
-                        reportSearch.getText().toString(), reportCheckBox.isChecked());
+                        reportSearch.getText().toString(), reportCheckBox.isChecked(), itemDataSet);
             } else {
-                // Permission denied, notify the user
+                Log.d("PermissionDebug", "Permission denied");
                 Toast.makeText(this, "Permission denied. Cannot create PDF.", Toast.LENGTH_SHORT).show();
             }
         }
