@@ -178,6 +178,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button viewBtn = findViewById(R.id.viewButton);
+        viewBtn.setOnClickListener(view -> {
+            if (mainCardsAdapter.getCheckedItems().isEmpty()) { return; }
+            Intent intent = new Intent(MainActivity.this, ViewItemActivity.class);
+            intent.putExtra("checkedItems", mainCardsAdapter.getCheckedItems());
+            Log.d("[TAAM]", "Passing array: " + mainCardsAdapter.getCheckedItems().size());
+            startActivity(intent);
+        });
+
         Button reportButton = findViewById(R.id.reportButton);
         reportButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -255,18 +264,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    public void ReportPopUp() {
-
-        Button viewBtn = findViewById(R.id.viewButton);
-        viewBtn.setOnClickListener(view -> {
-            if (mainCardsAdapter.getCheckedItems().isEmpty()) { return; }
-            Intent intent = new Intent(MainActivity.this, ViewItemActivity.class);
-            intent.putExtra("checkedItems", mainCardsAdapter.getCheckedItems());
-            Log.d("[TAAM]", "Passing array: " + mainCardsAdapter.getCheckedItems().size());
-            startActivity(intent);
-        });
     }
 
     public void onLoginSuccess(){
