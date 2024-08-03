@@ -1,6 +1,6 @@
 package com.example.taam;
 
-
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,7 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import android.annotation.SuppressLint;
 import android.util.Log;
 import android.widget.Toast;
 import android.Manifest;
@@ -62,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isAdmin;
 
     private ArrayList<Item> itemDataSet;
-    private CardsAdapter cardsAdapter;
+    private MainCardsAdapter cardsAdapter;
 
     // GENERATE REPORT =================
     private static final int PERMISSION_REQUEST_CODE = 786;
@@ -70,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText reportSearch;
     private CheckBox reportCheckBox;
 
+    private MainCardsAdapter mainCardsAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
             child.setEnabled(isAdmin);
         }
 
-        if (isAdmin) adminBTN.setText("BACK");
+        if (isAdmin) adminBTN.setText(R.string.back_text);
         adminBTN.setOnClickListener(v -> {
             if (isAdmin) { switchAdminStatus(false); }
             else { logindialog.show(); }
@@ -152,8 +152,8 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         itemDataSet = new ArrayList<>();
-        cardsAdapter = new CardsAdapter(itemDataSet);
-        recyclerView.setAdapter(cardsAdapter);
+        mainCardsAdapter = new MainCardsAdapter(itemDataSet);
+        recyclerView.setAdapter(mainCardsAdapter);
 
         dbRef.addValueEventListener(new ValueEventListener() {
 
@@ -168,10 +168,8 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("[TAAM]", "Data: " + item.getName());
 
                     itemDataSet.add(item);
-                    cardsAdapter.notifyDataSetChanged();
+                    mainCardsAdapter.notifyDataSetChanged();
                 }
-
-
             }
 
             @Override
@@ -261,6 +259,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void ReportPopUp() {
 
+        Button viewBtn = findViewById(R.id.viewButton);
+        viewBtn.setOnClickListener(view -> {
+            if (mainCardsAdapter.getCheckedItems().isEmpty()) { return; }
+            Intent intent = new Intent(MainActivity.this, ViewItemActivity.class);
+            intent.putExtra("checkedItems", mainCardsAdapter.getCheckedItems());
+            Log.d("[TAAM]", "Passing array: " + mainCardsAdapter.getCheckedItems().size());
+            startActivity(intent);
+        });
     }
 
     public void onLoginSuccess(){

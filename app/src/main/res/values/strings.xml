@@ -10,4 +10,8 @@
         <item>Category</item>
         <item>Period</item>
     </string-array>
+    <string name="back_text">BACK</string>
+    <string name="name_title">NAME</string>
+    <string name="category_title">CATEGORY</string>
+    <string name="period_title">PERIOD</string>
 </resources>
