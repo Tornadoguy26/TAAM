@@ -1,21 +1,18 @@
 package com.example.taam.structures;
 
 public class User {
-    private String username;
-    private String passhash;
+    private final String email;
+    private final String password;
 
-    // Necessary for firebase conversion
-    public User() {}
-
-    public User(String username, String passhash) {
-        this.username = username;
-        this.passhash = passhash;
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
     }
 
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
-
-    public String getPasshash() { return passhash; }
-    public void setPasshash(String passhash) { this.passhash = passhash; }
-
+    public String getEmail() {
+        return email;
+    }
+    public String getPassword() {
+        return password;
+    }
 }

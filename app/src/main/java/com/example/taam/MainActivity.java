@@ -1,259 +1,214 @@
 package com.example.taam;
 
-import static android.content.ContentValues.TAG;
-
-import android.content.ContentResolver;
-import android.content.Context;
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import android.util.Log;
+
+
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
-import android.os.FileUtils;
-import android.util.Log;
-import android.webkit.MimeTypeMap;
-import android.widget.*;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.Toast;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.taam.structures.Item;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.google.firebase.FirebaseApp;
+import com.example.taam.structures.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.net.URLConnection;
-import java.util.UUID;
+import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity
-        implements AdapterView.OnItemSelectedListener{
-    String[] categories = {"Jade", "Paintings", "Calligraphy", "Rubbings", "Bronze",
-            "Brass and Copper", "Gold and Silvers", "Lacquer", "Enamels"};
-    String[] periods = {"Xia", "Shang", "Zhou", "Chuanqiu", "Zhanggou", "Qin", "Han",
-            "Shangou", "Ji", "South and North", "Shui", "Tang", "Liao", "Song", "Jin",
-            "Yuan", "Ming", "Qing", "Modern"};
-    String filename;
-    Uri filepath;
+
+
+public class MainActivity extends AppCompatActivity {
+
+    // LOGIN =================
+    private EditText auser, apassword;
+
+    private Dialog logindialog;
+    private LoginPresenter loginPresenter;
+    // =======================
+
+    private boolean isAdmin;
+
+    private ArrayList<Item> itemDataSet;
+    private MainCardsAdapter mainCardsAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        // Database Manager Instance
+        DatabaseManager databaseManager = DatabaseManager.getInstance();
+
+        isAdmin = getIntent().getBooleanExtra("admin_status", false);
+        Log.d("[TAAM]", "isAdmin: " + isAdmin);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
+        Button adminBTN = findViewById(R.id.adminLoginButton);
 
-        Spinner spinnerCategory = findViewById(R.id.addScreen_SpinnerCategory);
-        spinnerCategory.setOnItemSelectedListener(this);
-        ArrayAdapter adCategory = new ArrayAdapter(this,
-                android.R.layout.simple_spinner_item, categories);
-        adCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCategory.setAdapter(adCategory);
+        logindialog = new Dialog(this);
+        logindialog.setContentView(R.layout.login_screen);
+        logindialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        logindialog.setCancelable(false);
 
-        Spinner spinnerPeriod = findViewById(R.id.addScreen_SpinnerPeriod);
-        spinnerPeriod.setOnItemSelectedListener(this);
-        ArrayAdapter adPeriod = new ArrayAdapter(this,
-                android.R.layout.simple_spinner_item, periods);
-        adPeriod.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerPeriod.setAdapter(adPeriod);
+        Button adminCancelBTN = logindialog.findViewById(R.id.BackButton);
+        Button adminLoginBTN = logindialog.findViewById(R.id.LogButton);
+        loginPresenter = new LoginPresenter(this);
 
-        // get the items
-        EditText ET_lotNumber = findViewById(R.id.addScreen_LotNumber);
-        EditText ET_name = findViewById(R.id.addScreen_Name);
-        Spinner S_category = findViewById(R.id.addScreen_SpinnerCategory);
-        Spinner S_period = findViewById(R.id.addScreen_SpinnerPeriod);
-        EditText ET_description = findViewById(R.id.addScreen_Description);
-        Button B_upload = findViewById(R.id.addScreen_UploadButton);
-        Button B_submit = findViewById(R.id.addScreen_SubmitButton);
+        auser = logindialog.findViewById(R.id.LogUsername);
+        apassword = logindialog.findViewById(R.id.LogPassword);
+        CheckBox togglevis = logindialog.findViewById(R.id.PasswordVis);
 
-        B_upload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageChooser();
+        TextView titleText = findViewById(R.id.titleTextView);
+        if (isAdmin) titleText.setText(R.string.admin_screen_title);
+
+        LinearLayout adminLayout = findViewById(R.id.adminFeaturesLayout);
+        for (int i = 0; i < adminLayout.getChildCount(); i++) {
+            View child = adminLayout.getChildAt(i);
+            child.setEnabled(isAdmin);
+        }
+
+        if (isAdmin) adminBTN.setText(R.string.back_text);
+        adminBTN.setOnClickListener(v -> {
+            if (isAdmin) { switchAdminStatus(false); }
+            else { logindialog.show(); }
+        });
+
+        adminCancelBTN.setOnClickListener(v -> {
+            auser.setText("");
+            apassword.setText("");
+            togglevis.setChecked(false);
+            TextView loginStatus = logindialog.findViewById(R.id.LogIncorrect);
+            loginStatus.setText("");
+            logindialog.dismiss();
+        });
+
+        adminLoginBTN.setOnClickListener(v -> {
+            String email = auser.getText().toString().trim();
+            String password = apassword.getText().toString().trim();
+            User user = new User(email, password);
+            loginPresenter.login(user);
+        });
+
+        togglevis.setOnCheckedChangeListener((v, flag) -> {
+            if(flag){
+                apassword.setTransformationMethod(null);
+            } else {
+                apassword.setTransformationMethod(new PasswordTransformationMethod());
             }
         });
 
-        B_submit.setOnClickListener(new View.OnClickListener() {
+        Button buttonAdd = findViewById(R.id.addButton);
+        buttonAdd.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AddItemActivity.class);
+            startActivity(intent);
+        });
+
+
+        FirebaseDatabase db = FirebaseDatabase.getInstance("https://taam-1c732-default-rtdb.firebaseio.com/");
+        DatabaseReference dbRef = db.getReference("Items");
+
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        itemDataSet = new ArrayList<>();
+        mainCardsAdapter = new MainCardsAdapter(itemDataSet);
+        recyclerView.setAdapter(mainCardsAdapter);
+
+        dbRef.addValueEventListener(new ValueEventListener() {
+
+            @SuppressLint("NotifyDataSetChanged")
             @Override
-            public void onClick(View v) {
-//                Take all input texts
-//                Upload it to firebase database (realtime)
-//                Upload the image to firebase cloud storage wit hthe name <id>.<ext>
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                itemDataSet.clear();
 
+                for (DataSnapshot snap : snapshot.getChildren()) {
+                    Item item = snap.getValue(Item.class);
+                    assert item != null;
+                    Log.d("[TAAM]", "Data: " + item.getName());
 
-                String lotNumber = ET_lotNumber.getText().toString();
-                String name = ET_name.getText().toString();
-                String category = S_category.getSelectedItem().toString();
-                String period = S_period.getSelectedItem().toString();
-                String description = ET_description.getText().toString();
-                if(name.isEmpty() || category.isEmpty() || period.isEmpty() ||
-                        description.isEmpty() || lotNumber.isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Invalid Inputs! Please fill " +
-                            "all the fields", Toast.LENGTH_SHORT).show();
+                    itemDataSet.add(item);
+                    mainCardsAdapter.notifyDataSetChanged();
                 }
-                else {
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference myRef = database.getReference();
+            }
 
-                    // Read from the database
-                    myRef.child("Items").child(lotNumber).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DataSnapshot> task) {
-                            if (!task.isSuccessful()) {
-                                Toast.makeText(MainActivity.this, "An error has occurred when adding the object", Toast.LENGTH_SHORT).show();
-                            }
-                            else {
-                                Item itemFound = task.getResult().getValue(Item.class);
-                                if(task.getResult().exists()) {
-                                    Toast.makeText(MainActivity.this, "Item" +
-                                            "with the same lot number already exists", Toast.LENGTH_SHORT).show();
-                                }
-                                else {
-                                    Item new_item = new Item(Integer.parseInt(lotNumber), name, category, period,
-                                            description);
-                                    myRef.child("Items").child(lotNumber).setValue(new_item);
-                                    FirebaseStorage storage = FirebaseStorage.getInstance();
-
-
-                                    StorageReference storageRef = storage.getReference();
-                                    String type = getFileExtension(MainActivity.this, filepath);
-                                    StorageReference imageRef = storageRef.child(lotNumber + "." + type);
-
-                                    UploadTask uploadTask = imageRef.putFile(filepath);
-
-// Register observers to listen for when the download is done or if it fails
-                                    uploadTask.addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception exception) {
-                                            // Handle unsuccessful uploads
-                                            Toast.makeText(MainActivity.this, "Failed to upload image!", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                            Toast.makeText(MainActivity.this, "Image has been uploaded!", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    });
-
-
-//
-                }
-
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle possible errors
             }
         });
-    }
-    public static String getFileExtension(Context context, Uri uri) {
-        String extension = null;
 
-        // First try to get extension from MimeTypeMap
-        ContentResolver contentResolver = context.getContentResolver();
-        String mimeType = contentResolver.getType(uri);
-        if (mimeType != null) {
-            extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
-        }
+        Button viewBtn = findViewById(R.id.viewButton);
+        viewBtn.setOnClickListener(view -> {
+            if (mainCardsAdapter.getCheckedItems().isEmpty()) { return; }
+            Intent intent = new Intent(MainActivity.this, ViewItemActivity.class);
+            intent.putExtra("checkedItems", mainCardsAdapter.getCheckedItems());
+            Log.d("[TAAM]", "Passing array: " + mainCardsAdapter.getCheckedItems().size());
+            startActivity(intent);
+        });
 
-        // If the extension is still null, get it from the URI itself
-        if (extension == null) {
-            String path = uri.getPath();
-            if (path != null) {
-                int lastDot = path.lastIndexOf('.');
-                if (lastDot != -1) {
-                    extension = path.substring(lastDot + 1);
-                }
-            }
-        }
-
-        return extension;
-    }
-    void imageChooser() {
-
-        // create an instance of the
-        // intent of the type image
-        Intent i = new Intent();
-        i.setType("image/*");
-        i.setAction(Intent.ACTION_GET_CONTENT);
-
-        // pass the constant to compare it
-        // with the returned requestCode
-        startActivityForResult(Intent.createChooser(i, "Select Picture"), 200);
+        Button buttonRemove = findViewById(R.id.removeButton);
+        buttonRemove.setOnClickListener(v -> {
+            if(mainCardsAdapter.getCheckedItems().size() == 0) return;
+            // make pop up confirmation
+            new AlertDialog.Builder(this)
+                    .setTitle("Delete Confirmation")
+                    .setMessage("Are you sure you want to delete the selected items?")
+            // database
+            .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                databaseManager.deleteItems(mainCardsAdapter.getCheckedItems());
+            }).setNegativeButton(android.R.string.no, (dialog, which) -> {
+                // User cancelled, do nothing
+                dialog.dismiss();
+            })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        });
     }
 
-
-
-    public void onActivityResult ( int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            // compare the resultCode with the
-            // SELECT_PICTURE constant
-            if (requestCode == 200) {
-                // Get the url of the image from data
-                Uri selectedImageUri = data.getData();
-                if (null != selectedImageUri) {
-                    ImageView preview = findViewById(R.id.addScreen_PreviewImage);
-                    preview.setVisibility(View.VISIBLE);
-                    // update the preview image in the layout
-                    preview.setImageURI(selectedImageUri);
-                    this.filepath = selectedImageUri;
-                    this.filename = selectedImageUri.toString();
-                }
-            }
-        }
+    public void onLoginSuccess(){
+        TextView loginStatus = logindialog.findViewById(R.id.LogIncorrect);
+        loginStatus.setText("Login Successful");
+        loginStatus.setTextColor(Color.GREEN);
     }
 
-
-    @Override
-    public void onItemSelected(AdapterView<?> arg0,
-                               View arg1,
-                               int position,
-                               long id)
-    {
-
+    public void onLoginFailure(){
+        TextView loginStatus = logindialog.findViewById(R.id.LogIncorrect);
+        loginStatus.setText("Login Failed: invalid credentials");
+        loginStatus.setTextColor(Color.RED);
     }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> arg0)
-    {
-        // Auto-generated method stub
+    public void switchAdminStatus(boolean setAdmin) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("admin_status", setAdmin);
+        logindialog.dismiss(); finish();
+        startActivity(intent);
     }
 
 

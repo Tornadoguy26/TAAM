@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="15dp">
+
+                <TextView
+                    android:id="@+id/addScreen_TextViewTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Toronto Asian Art Museum Collection Management"
+                    android:textAlignment="center"
+                    android:textSize="34sp" />
+
+                <TextView
+                    android:id="@+id/addScreen_TextViewLotNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Lot Number:" />
+
+                <EditText
+                    android:id="@+id/addScreen_LotNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginVertical="10dp"
+                    android:background="@drawable/edit_text_border"
+                    android:backgroundTintMode="add"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:paddingHorizontal="10dp"
+                    android:singleLine="true" />
+
+                <TextView
+                    android:id="@+id/addScreen_TextViewName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Name" />
+
+                <EditText
+                    android:id="@+id/addScreen_Name"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginVertical="10dp"
+                    android:background="@drawable/edit_text_border"
+                    android:backgroundTintMode="add"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:paddingHorizontal="10dp"
+                    android:singleLine="true" />
+
+                <TextView
+                    android:id="@+id/addScreen_TextViewCategory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Category" />
+
+                <Spinner
+                    android:id="@+id/addScreen_SpinnerCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginVertical="10dp"
+                    android:foreground="@drawable/spinner_border"
+                    android:spinnerMode="dropdown" />
+
+                <TextView
+                    android:id="@+id/addScreen_TextViewPeriod"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Period" />
+
+
+                <Spinner
+                    android:id="@+id/addScreen_SpinnerPeriod"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginVertical="10dp"
+                    android:foreground="@drawable/spinner_border"
+                    android:spinnerMode="dropdown" />
+
+                <TextView
+                    android:id="@+id/addScreen_TextViewDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Description" />
+
+                <EditText
+                    android:id="@+id/addScreen_Description"
+                    android:layout_width="match_parent"
+                    android:layout_height="192dp"
+                    android:layout_marginVertical="10dp"
+                    android:autoText="false"
+                    android:background="@drawable/edit_text_border"
+                    android:backgroundTintMode="add"
+                    android:ems="10"
+                    android:fallbackLineSpacing="true"
+                    android:gravity="top|left"
+                    android:inputType="text|textLongMessage|textMultiLine"
+                    android:isScrollContainer="false"
+                    android:lineBreakStyle="normal"
+                    android:lineBreakWordStyle="none"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="0dp"
+                    android:scrollbars="vertical"
+                    android:scrollHorizontally="false"
+                    android:singleLine="false"
+                    android:textAlignment="viewStart"
+                    android:verticalScrollbarPosition="right" />
+
+                <TextView
+                    android:id="@+id/addScreen_AddFile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="Picture/Video" />
+                <!--Button to open the image selector-->
+                <Button
+                    android:id="@+id/addScreen_UploadButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="#D3D3D3"
+                    android:backgroundTintMode="add"
+                    android:hapticFeedbackEnabled="true"
+                    android:text="SELECT IMAGE"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    app:cornerRadius="0dp"
+                    app:strokeColor="#000000"
+                    app:strokeWidth="2dp" />
+
+                <!--ImageView to preview the selected image-->
+                <ImageView
+                    android:id="@+id/addScreen_PreviewImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_below="@id/addScreen_UploadButton"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/addScreen_SubmitButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="#000000"
+                    android:text="Submit"
+                    android:textSize="16sp"
+                    app:iconTint="#DC1010" />
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </ScrollView>
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
