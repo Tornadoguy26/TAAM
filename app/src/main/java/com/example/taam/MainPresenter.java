@@ -128,8 +128,9 @@ public class MainPresenter {
 
         CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
         allOf.thenRun(() -> {
-            System.out.println("All async functions are done.");
+            Log.d(TAG, "All async functions are done.");
             for (int i = 0; i < items.size(); i++) {
+                Log.d(TAG, "Creating page " + (i + 1));
                 PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(pageWidth, pageHeight, i + 1).create();
                 PdfDocument.Page page = pdfDocument.startPage(pageInfo);
                 Item item = items.get(i);
@@ -145,25 +146,60 @@ public class MainPresenter {
                 canvas.drawText("Period: " + item.getPeriod(), 10, 100, paint);
 
                 // Multi-line description
-                String[] desc = item.getDescription().split(" ");
-                StringBuilder line = new StringBuilder();
                 int y = 125;
-                for (String word : desc) {
-                    float textWidth = paint.measureText(line + word + " ");
-                    if (textWidth <= pageWidth - 10) {
-                        line.append(word).append(" ");
-                    } else {
+                String description = item.getDescription();
+                if (description != null) {
+                    String[] desc = item.getDescription().split(" ");
+                    StringBuilder line = new StringBuilder();
+                    for (String word : desc) {
+                        float textWidth = paint.measureText(line + word + " ");
+                        if (textWidth <= pageWidth - 10) {
+                            line.append(word).append(" ");
+                        } else {
+                            canvas.drawText(line.toString(), 10, y, paint);
+                            line = new StringBuilder(word).append(" ");
+                            y += 25;
+                        }
+                    }
+                    if (!line.toString().isEmpty()) {
                         canvas.drawText(line.toString(), 10, y, paint);
-                        line = new StringBuilder(word).append(" ");
-                        y += 25;
                     }
                 }
-                if (!line.toString().isEmpty()) {
-                    canvas.drawText(line.toString(), 10, y, paint);
+
+                if (bitmaps[i] != null) {
+                    canvas.drawBitmap(bitmaps[i], 10, y + 25, paint);
+                } else {
+                    Log.d(TAG, "No image available");
+                    canvas.drawText("No image available", 10, y + 25, paint);
                 }
 
-                canvas.drawBitmap(bitmaps[i], 10, y + 25, paint);
+                pdfDocument.finishPage(page);
+                Log.d(TAG, "Page " + (i + 1) + " created");
             }
+            Log.d(TAG, "all pages done");
+
+            String pdfPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
+            File file = new File(pdfPath, "TAAM.pdf");
+            int counter = 0;
+            while (file.exists()) {
+                counter++;
+                file = new File(pdfPath, "TAAM(" + counter + ").pdf");
+            }
+
+            try {
+                // writing our PDF file to that location.
+                pdfDocument.writeTo(Files.newOutputStream(file.toPath()));
+                Log.d(TAG, "PDF file written");
+                // printing toast message on completion of PDF generation.
+                Toast.makeText(mainActivity, "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                // handling error
+                Toast.makeText(mainActivity, "Failed to generate PDF file.", Toast.LENGTH_SHORT).show();
+            }
+
+            // closing our PDF file.
+            pdfDocument.close();
+            Log.d(TAG, "PDF file closed");
         });
     }
 
