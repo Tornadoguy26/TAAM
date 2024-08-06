@@ -324,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d("PermissionDebug", "Permission granted");
-                mainPresenter.generateReport(reportSpinner.getSelectedItem().toString(),
+                pdfPresenter.generateReport(reportSpinner.getSelectedItem().toString(),
                         reportSearch.getText().toString(), reportCheckBox.isChecked(), itemDataSet);
             } else {
                 Log.d("PermissionDebug", "Permission denied");
