@@ -3,6 +3,13 @@
     <string name="loading">Loading…</string>
     <string name="main_screen_title">Toronto Asian Art Museum Collections Management</string>
     <string name="admin_screen_title">Collection Management</string>
+    <string-array name="report_options">
+        <item>Select All Items</item>
+        <item>Lot Number</item>
+        <item>Name</item>
+        <item>Category</item>
+        <item>Period</item>
+    </string-array>
     <string name="back_text">BACK</string>
     <string name="name_title">NAME</string>
     <string name="category_title">CATEGORY</string>

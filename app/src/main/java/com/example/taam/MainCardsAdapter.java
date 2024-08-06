@@ -37,7 +37,7 @@ public class MainCardsAdapter extends RecyclerView.Adapter<MainCardsAdapter.View
             nameTextView = v.findViewById(R.id.nameTextView);
             descTextView = v.findViewById(R.id.descTextView);
             imageView = v.findViewById(R.id.imageView);
-            checkBox = v.findViewById(R.id.checkBox);
+            checkBox = v.findViewById(R.id.reportCheckBox);
 
             // Define click listener for the ViewHolder's View.
             /*
