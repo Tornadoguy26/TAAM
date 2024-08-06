@@ -8,6 +8,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -16,6 +19,7 @@ import android.widget.TextView;
 
 import android.annotation.SuppressLint;
 import android.util.Log;
+import android.widget.Toast;
 
 
 import androidx.activity.EdgeToEdge;
@@ -48,6 +52,25 @@ public class MainActivity extends AppCompatActivity {
     private LoginPresenter loginPresenter;
     // =======================
 
+    // SEARCH =================
+    private EditText slotnum, sname;
+
+    private Dialog searchdialog;
+
+    String[] categories = {"Jade", "Paintings", "Calligraphy", "Rubbings", "Bronze",
+            "Brass and Copper", "Gold and Silvers", "Lacquer", "Enamels"};
+    String[] periods = {"Xia", "Shang", "Zhou", "Chuanqiu", "Zhanggou", "Qin", "Han",
+            "Shangou", "Ji", "South and North", "Shui", "Tang", "Liao", "Song", "Jin",
+            "Yuan", "Ming", "Qing", "Modern"};
+
+    AutoCompleteTextView scategory;
+    ArrayAdapter<String> adapterItems;
+
+    AutoCompleteTextView speriod;
+    ArrayAdapter<String> adapterItems2;
+
+    // =======================
+
     private boolean isAdmin;
 
     private ArrayList<Item> itemDataSet;
@@ -69,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        // LOGIN ==================================================================================
         Button adminBTN = findViewById(R.id.adminLoginButton);
 
         logindialog = new Dialog(this);
@@ -122,6 +146,67 @@ public class MainActivity extends AppCompatActivity {
                 apassword.setTransformationMethod(new PasswordTransformationMethod());
             }
         });
+        // =========================================================================================
+
+        // SEARCH ==================================================================================
+
+        Button searchBTN = findViewById(R.id.searchButton);
+
+        searchdialog = new Dialog(this);
+        searchdialog.setContentView(R.layout.search_input);
+        searchdialog.getWindow().setBackgroundDrawable((new ColorDrawable(Color.TRANSPARENT)));
+        searchdialog.setCancelable(false);
+
+        Button searchCancelBTN = searchdialog.findViewById(R.id.BackButton);
+        Button searchResultBTN = searchdialog.findViewById(R.id.ResultButton);
+
+        searchBTN.setOnClickListener(v -> {
+            searchdialog.show();
+        });
+
+
+        scategory = searchdialog.findViewById(R.id.auto_complete_txt);
+        adapterItems = new ArrayAdapter<String>(this, R.layout.search_list, categories);
+
+        scategory.setAdapter(adapterItems);
+
+        scategory.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l){
+                String item = adapterView.getItemAtPosition(i).toString();
+                Toast.makeText(MainActivity.this, "Item: " + item, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        speriod = searchdialog.findViewById(R.id.auto_complete_txt2);
+        adapterItems2 = new ArrayAdapter<String>(this, R.layout.search_list, periods);
+
+        speriod.setAdapter(adapterItems2);
+
+        speriod.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l){
+                String item2 = adapterView.getItemAtPosition(i).toString();
+                Toast.makeText(MainActivity.this, "Item: " + item2, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        slotnum = searchdialog.findViewById(R.id.auto_complete_txt00);
+        sname = searchdialog.findViewById(R.id.auto_complete_txt0);
+
+        searchCancelBTN.setOnClickListener(v -> {
+            slotnum.setText("");
+            sname.setText("");
+            scategory.setText("");
+            speriod.setText("");
+            searchdialog.dismiss();
+        });
+
+        searchResultBTN.setOnClickListener(v -> {
+
+        });
+
+        // =========================================================================================
 
         Button b = findViewById(R.id.addButton);
         b.setOnClickListener(v -> {
