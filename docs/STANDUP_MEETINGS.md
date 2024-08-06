@@ -110,3 +110,33 @@ Documentation of progess and tasks for the development of this app.
      
     N/A.
 ##
+
+### 2024-08-02
+
+  **1. What have we completed since the last meeting?**
+    
+    Completed Search dialog.
+    
+  **2. What will we finish before the next meeting?**
+
+    Tasks in Search, Remove and Report.
+
+  **3. Are there any obstacles? If so, what are they?**
+     
+    Download Permissions for Report.
+##
+
+### 2024-08-05
+
+  **1. What have we completed since the last meeting?**
+    
+    Finished main functionality and requirements.
+    
+  **2. What will we finish before the next meeting?**
+
+    Merge into Main Branch + Login-Module Testing.
+
+  **3. Are there any obstacles? If so, what are they?**
+     
+    N/A.
+##
