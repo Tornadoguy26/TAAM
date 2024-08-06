@@ -21,7 +21,6 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 
@@ -30,15 +29,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
-public class MainPresenter {
+public class PdfPresenter {
     private final MainActivity mainActivity;
     private final FirebaseAuth auth;
     private static final String TAG = "MainPresenter";
 
-    public MainPresenter(MainActivity mainActivity) {
+    public PdfPresenter(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
         this.auth = FirebaseAuth.getInstance();
     }

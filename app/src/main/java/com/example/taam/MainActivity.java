@@ -61,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText auser, apassword;
 
     private Dialog logindialog;
-    private MainPresenter mainPresenter;
+    private LoginPresenter loginPresenter;
+    private PdfPresenter pdfPresenter;
     // =======================
 
     private boolean isAdmin;
@@ -101,7 +102,8 @@ public class MainActivity extends AppCompatActivity {
 
         Button adminCancelBTN = logindialog.findViewById(R.id.BackButton);
         Button adminLoginBTN = logindialog.findViewById(R.id.LogButton);
-        mainPresenter = new MainPresenter(this);
+        loginPresenter = new LoginPresenter(this);
+        pdfPresenter = new PdfPresenter(this);
 
         auser = logindialog.findViewById(R.id.LogUsername);
         apassword = logindialog.findViewById(R.id.LogPassword);
@@ -135,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
             String email = auser.getText().toString().trim();
             String password = apassword.getText().toString().trim();
             User user = new User(email, password);
-            mainPresenter.login(user);
+            loginPresenter.login(user);
         });
 
         togglevis.setOnCheckedChangeListener((v, flag) -> {
@@ -257,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
                             requestPermission();
                             Log.d("PermissionDebug", "Requested permission");
                         } else {
-                            mainPresenter.generateReport(reportSpinner.getSelectedItem().toString(),
+                            pdfPresenter.generateReport(reportSpinner.getSelectedItem().toString(),
                                     reportSearch.getText().toString(), reportCheckBox.isChecked(), itemDataSet);
                         }
                     }
