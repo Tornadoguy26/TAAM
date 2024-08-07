@@ -20,9 +20,7 @@ import java.util.Objects;
 public class DatabaseManager {
 
     static DatabaseManager databaseManager;
-    private static FirebaseDatabase db;
     private static DatabaseReference dbRef;
-    private static FirebaseStorage storage;
     private static StorageReference storageRef;
     private static FirebaseAuth auth;
 
@@ -40,9 +38,9 @@ public class DatabaseManager {
     public static DatabaseManager getInstance() {
         if (databaseManager == null) {
             databaseManager = new DatabaseManager();
-            db = FirebaseDatabase.getInstance("https://taam-1c732-default-rtdb.firebaseio.com/");
+            FirebaseDatabase db = FirebaseDatabase.getInstance("https://taam-1c732-default-rtdb.firebaseio.com/");
             dbRef = db.getReference();
-            storage = FirebaseStorage.getInstance();
+            FirebaseStorage storage = FirebaseStorage.getInstance();
             storageRef = storage.getReference();
             auth = FirebaseAuth.getInstance();
         }
@@ -50,19 +48,19 @@ public class DatabaseManager {
     }
 
     // public ArrayList<Item> readItems();
-    public Task<Void> deleteItemInfoByLotNumber(int lotNumber) {
-        return dbRef.child("Items").child(Integer.toString(lotNumber)).removeValue();
+    public Task<Void> deleteItemInfo(Item item) {
+        return dbRef.child("Items").child(Integer.toString(item.getLotNumber())).removeValue();
     }
 
-    public Task<Void> deleteItemImageByLotNumber(int lotNumber) {
-        StorageReference itemRef = storageRef.child(lotNumber + ".png");
+    public Task<Void> deleteItemImage(Item item) {
+        StorageReference itemRef = storageRef.child(item.getLotNumber() + item.getImageExtension());
         return itemRef.delete();
     }
     public void deleteItems(ArrayList<Item> items, Context applicationContext) {
         List<Task <Void>> tasks = new ArrayList<Task<Void>>();
 
         for (int i = 0; i < items.size(); i++) {
-            Task<Void> deleteItemTask = deleteItemInfoByLotNumber(items.get(i).getLotNumber());
+            Task<Void> deleteItemTask = deleteItemInfo(items.get(i));
             deleteItemTask.addOnCompleteListener(task -> {
                 if (!task.isSuccessful()) {
                     Toast.makeText(applicationContext, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
@@ -70,7 +68,7 @@ public class DatabaseManager {
             });
 
             tasks.add(deleteItemTask);
-            deleteItemImageByLotNumber(items.get(i).getLotNumber());
+            deleteItemImage(items.get(i));
         }
 
         Tasks.whenAll(tasks).addOnCompleteListener(task -> {
@@ -81,6 +79,8 @@ public class DatabaseManager {
     public Task<AuthResult> loginQuery(String email, String password) {
         return auth.signInWithEmailAndPassword(email, password);
     }
+
+    public DatabaseReference getDbRef() { return dbRef; }
 
 }
 
