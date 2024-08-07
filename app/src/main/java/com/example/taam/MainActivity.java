@@ -171,7 +171,15 @@ public class MainActivity extends AppCompatActivity {
         CheckBox togglevis = logindialog.findViewById(R.id.PasswordVis);
 
         TextView titleText = findViewById(R.id.titleTextView);
-        if (isAdmin) titleText.setText(R.string.admin_screen_title);
+        Button buttonAdd = findViewById(R.id.addButton);
+        Button buttonRemove = findViewById(R.id.removeButton);
+        Button buttonReport = findViewById(R.id.reportButton);
+        if (isAdmin) {
+            titleText.setText(R.string.admin_screen_title);
+            buttonAdd.setVisibility(View.VISIBLE);
+            buttonRemove.setVisibility(View.VISIBLE);
+            buttonReport.setVisibility(View.VISIBLE);
+        }
 
         LinearLayout adminLayout = findViewById(R.id.adminFeaturesLayout);
         for (int i = 0; i < adminLayout.getChildCount(); i++) {
@@ -304,7 +312,16 @@ public class MainActivity extends AppCompatActivity {
 
         // =========================================================================================
 
-        Button buttonAdd = findViewById(R.id.addButton);
+
+
+        Button viewBtn = findViewById(R.id.viewButton);
+        viewBtn.setOnClickListener(view -> {
+            if (mainCardsAdapter.getCheckedItems().isEmpty()) { return; }
+            Intent intent = new Intent(MainActivity.this, ViewItemActivity.class);
+            intent.putExtra("checkedItems", mainCardsAdapter.getCheckedItems());
+            Log.d("[TAAM]", "Passing array: " + mainCardsAdapter.getCheckedItems().size());
+            startActivity(intent);
+        });
         buttonAdd.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, AddItemActivity.class);
             startActivity(intent);
@@ -342,29 +359,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button viewBtn = findViewById(R.id.viewButton);
-        viewBtn.setOnClickListener(view -> {
-            if (mainCardsAdapter.getCheckedItems().isEmpty()) { return; }
-            Intent intent = new Intent(MainActivity.this, ViewItemActivity.class);
-            intent.putExtra("checkedItems", mainCardsAdapter.getCheckedItems());
-            Log.d("[TAAM]", "Passing array: " + mainCardsAdapter.getCheckedItems().size());
-            startActivity(intent);
-        });
-
-        Button buttonRemove = findViewById(R.id.removeButton);
         buttonRemove.setOnClickListener(v -> {
+
+            if(mainCardsAdapter.getCheckedItems().size() == 0) {
+                Toast.makeText(this, "Please select at least one item to remove", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if(mainCardsAdapter.getCheckedItems().size() == 0) return;
+
             // make pop up confirmation
             new AlertDialog.Builder(this)
                     .setTitle("Delete Confirmation")
                     .setMessage("Are you sure you want to delete the selected items?")
-            // database
-            .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                databaseManager.deleteItems(mainCardsAdapter.getCheckedItems());
-            }).setNegativeButton(android.R.string.no, (dialog, which) -> {
-                // User cancelled, do nothing
-                dialog.dismiss();
-            })
+                    // database
+                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+
+                        databaseManager.deleteItems(mainCardsAdapter.getCheckedItems(), this);
+
+                        databaseManager.deleteItems(mainCardsAdapter.getCheckedItems());
+
+                    }).setNegativeButton(android.R.string.no, (dialog, which) -> {
+                        // User cancelled, do nothing
+                        dialog.dismiss();
+                    })
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
         });

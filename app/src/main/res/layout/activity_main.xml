@@ -32,6 +32,7 @@
             android:text="@string/main_screen_title"
             android:textColor="#000000"
             android:textSize="24sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -52,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="VIEW"
-                app:backgroundTint="#0D40B1"/>
+                app:backgroundTint="#4372AD"/>
 
             <Space
                 android:layout_width="0dp"
@@ -64,7 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="SEARCH"
-                app:backgroundTint="#0D40B1"/>
+                app:backgroundTint="#4372AD"/>
 
             <Space
                 android:layout_width="0dp"
@@ -76,7 +77,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ADMIN"
-                app:backgroundTint="#0D40B1"/>
+                app:backgroundTint="#4372AD"/>
 
         </LinearLayout>
 
@@ -100,8 +101,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ADD"
-                android:visibility="visible"
-                app:backgroundTint="#0D40B1"/>
+                android:visibility="invisible"
+                app:backgroundTint="#4372AD"/>
 
             <Space
                 android:layout_width="0dp"
@@ -113,8 +114,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="REMOVE"
-                android:visibility="visible"
-                app:backgroundTint="#0D40B1"/>
+                android:visibility="invisible"
+                app:backgroundTint="#4372AD"/>
 
             <Space
                 android:layout_width="0dp"
@@ -125,9 +126,9 @@
                 android:id="@+id/reportButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:backgroundTint="#0D40B1"
+                app:backgroundTint="#4372AD"
                 android:text="REPORT"
-                android:visibility="visible"
+                android:visibility="invisible"
                 />
 
         </LinearLayout>

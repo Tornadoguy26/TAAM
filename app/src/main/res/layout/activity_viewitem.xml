@@ -19,8 +19,7 @@
             android:layout_margin="20dp"
             android:layout_alignParentTop="true"
             android:text="@string/back_text"
-            android:background="@drawable/logintext"
-            app:backgroundTint="#000000"
+            app:backgroundTint="#4372AD"
             tools:layout_editor_absoluteX="20dp" />
 
         <androidx.recyclerview.widget.RecyclerView
