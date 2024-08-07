@@ -230,18 +230,29 @@ public class MainActivity extends AppCompatActivity {
 
         Button buttonRemove = findViewById(R.id.removeButton);
         buttonRemove.setOnClickListener(v -> {
+
+            if(mainCardsAdapter.getCheckedItems().size() == 0) {
+                Toast.makeText(this, "Please select at least one item to remove", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if(mainCardsAdapter.getCheckedItems().size() == 0) return;
+
             // make pop up confirmation
             new AlertDialog.Builder(this)
                     .setTitle("Delete Confirmation")
                     .setMessage("Are you sure you want to delete the selected items?")
-            // database
-            .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                databaseManager.deleteItems(mainCardsAdapter.getCheckedItems());
-            }).setNegativeButton(android.R.string.no, (dialog, which) -> {
-                // User cancelled, do nothing
-                dialog.dismiss();
-            })
+                    // database
+                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+
+                        databaseManager.deleteItems(mainCardsAdapter.getCheckedItems(), this);
+
+                        databaseManager.deleteItems(mainCardsAdapter.getCheckedItems());
+
+                    }).setNegativeButton(android.R.string.no, (dialog, which) -> {
+                        // User cancelled, do nothing
+                        dialog.dismiss();
+                    })
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
         });
@@ -384,4 +395,3 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-
