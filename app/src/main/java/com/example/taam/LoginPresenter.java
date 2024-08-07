@@ -18,7 +18,7 @@ public class LoginPresenter {
             return;
         }
 
-        loginModel.loginQuery(this, user.getEmail(), user.getPassword()).addOnCompleteListener(task -> {
+        loginModel.loginQuery(user.getEmail(), user.getPassword()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 mainActivity.onLoginSuccess();
                 mainActivity.switchAdminStatus(true);

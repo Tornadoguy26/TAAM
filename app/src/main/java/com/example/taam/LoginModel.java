@@ -11,7 +11,7 @@ public class LoginModel {
         this.auth = FirebaseAuth.getInstance();
     }
 
-    public Task<AuthResult> loginQuery(LoginPresenter presenter, String email, String password) {
+    public Task<AuthResult> loginQuery(String email, String password) {
         return auth.signInWithEmailAndPassword(email, password);
     }
 }
