@@ -5,22 +5,26 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginPresenter {
     private final MainActivity mainActivity;
-    private final FirebaseAuth auth;
+    private final LoginModel loginModel;
 
     public LoginPresenter(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
-        this.auth = FirebaseAuth.getInstance();
+        this.loginModel = new LoginModel();
     }
 
     public void login(User user) {
-        auth.signInWithEmailAndPassword(user.getEmail(), user.getPassword())
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        mainActivity.onLoginSuccess();
-                        mainActivity.switchAdminStatus(true);
-                    } else {
-                        mainActivity.onLoginFailure();
-                    }
-                });
+        if (user.getEmail() == null || user.getPassword() == null || user.getEmail().isEmpty() || user.getPassword().isEmpty()) {
+            mainActivity.onLoginFailure();
+            return;
+        }
+
+        loginModel.loginQuery(this, user.getEmail(), user.getPassword()).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                mainActivity.onLoginSuccess();
+                mainActivity.switchAdminStatus(true);
+            } else {
+                mainActivity.onLoginFailure();
+            }
+        });
     }
 }
