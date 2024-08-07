@@ -11,13 +11,12 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="376dp"
         android:layout_height="399dp"
-        android:background="#F0F0E0">
+        android:background="#FFFFFF">
 
         <TextView
             android:id="@+id/logHeader"
             android:layout_width="277dp"
             android:layout_height="55dp"
-            android:background="#E5E4C2"
             android:fontFamily="@font/adlam_display"
             android:text="Admin Login"
             android:textAlignment="center"
@@ -31,12 +30,13 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.062" />
 
+
         <EditText
             android:id="@+id/LogUsername"
             android:layout_width="191dp"
             android:layout_height="50dp"
             android:layout_marginTop="44dp"
-            android:background="@drawable/logintext"
+            android:background="@drawable/underline_text_border"
             android:drawableStart="@drawable/ic_action_name"
             android:ems="10"
             android:hint="Enter Email"
@@ -47,7 +47,6 @@
             app:layout_constraintStart_toStartOf="@+id/logHeader"
             app:layout_constraintTop_toBottomOf="@+id/logHeader" />
 
-
         <Button
             android:id="@+id/BackButton"
             android:layout_width="81dp"
@@ -55,9 +54,9 @@
             android:background="@drawable/logintext"
             android:text="Back"
             android:textAlignment="viewStart"
-            android:textSize="14sp"
             android:textColor="#000000"
-            app:backgroundTint="#E5E4C2"
+            android:textSize="14sp"
+            app:backgroundTint="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -86,7 +85,7 @@
             android:layout_width="191dp"
             android:layout_height="50dp"
             android:layout_marginEnd="13dp"
-            android:background="@drawable/logintext"
+            android:background="@drawable/underline_text_border"
             android:drawableStart="@drawable/ic_password"
             android:ems="10"
             android:hint="Enter Password"
@@ -107,10 +106,10 @@
             android:layout_height="51dp"
             android:background="@drawable/logintext"
             android:text="Login"
-            android:textColor="#000000"
             android:textAlignment="center"
+            android:textColor="#FFFFFF"
             android:textSize="22sp"
-            app:backgroundTint="#E5E4C2"
+            app:backgroundTint="#000000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/LogIncorrect"
             app:layout_constraintHorizontal_bias="0.538"

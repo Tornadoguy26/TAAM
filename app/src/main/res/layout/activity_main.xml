@@ -51,7 +51,8 @@
                 android:id="@+id/viewButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="VIEW" />
+                android:text="VIEW"
+                app:backgroundTint="#0D40B1"/>
 
             <Space
                 android:layout_width="0dp"
@@ -63,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="SEARCH"
-                app:icon="@drawable/common_google_signin_btn_icon_dark_focused" />
+                app:backgroundTint="#0D40B1"/>
 
             <Space
                 android:layout_width="0dp"
@@ -74,7 +75,8 @@
                 android:id="@+id/adminLoginButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ADMIN" />
+                android:text="ADMIN"
+                app:backgroundTint="#0D40B1"/>
 
         </LinearLayout>
 
@@ -98,7 +100,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ADD"
-                android:visibility="visible" />
+                android:visibility="visible"
+                app:backgroundTint="#0D40B1"/>
 
             <Space
                 android:layout_width="0dp"
@@ -111,7 +114,7 @@
                 android:layout_height="wrap_content"
                 android:text="REMOVE"
                 android:visibility="visible"
-                android:backgroundTint="#56C7D5"/>
+                app:backgroundTint="#0D40B1"/>
 
             <Space
                 android:layout_width="0dp"
@@ -122,9 +125,10 @@
                 android:id="@+id/reportButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="#32393A"
+                app:backgroundTint="#0D40B1"
                 android:text="REPORT"
-                android:visibility="visible" />
+                android:visibility="visible"
+                />
 
         </LinearLayout>
 

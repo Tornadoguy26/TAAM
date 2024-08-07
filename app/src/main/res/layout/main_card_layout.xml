@@ -71,7 +71,8 @@
             android:layout_alignParentEnd="true"
             android:layout_marginStart="7dp"
             android:layout_marginEnd="7dp"
-            android:layout_toEndOf="@+id/nameTextView" />
+            android:layout_toEndOf="@+id/nameTextView"
+            app:buttonTint="#000000"/>
         <!--            android:maxHeight="@dimen/card_height"-->
 
     </RelativeLayout>
