@@ -360,7 +360,7 @@ public class MainActivity extends AppCompatActivity {
                     .setMessage("Are you sure you want to delete the selected items?")
             // database
             .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                databaseManager.deleteItems(mainCardsAdapter.getCheckedItems());
+                databaseManager.deleteItems(mainCardsAdapter.getCheckedItems(), getApplicationContext());
             }).setNegativeButton(android.R.string.no, (dialog, which) -> {
                 // User cancelled, do nothing
                 dialog.dismiss();
