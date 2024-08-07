@@ -106,9 +106,9 @@ public class MainActivity extends AppCompatActivity {
     private Dialog searchdialog;
     ArrayList<Item> items = new ArrayList<>();
 
-    String[] categories = {"Jade", "Paintings", "Calligraphy", "Rubbings", "Bronze",
+    String[] categories = {"Clear", "Jade", "Paintings", "Calligraphy", "Rubbings", "Bronze",
             "Brass and Copper", "Gold and Silvers", "Lacquer", "Enamels"};
-    String[] periods = {"Xia", "Shang", "Zhou", "Chuanqiu", "Zhanggou", "Qin", "Han",
+    String[] periods = {"Clear", "Xia", "Shang", "Zhou", "Chuanqiu", "Zhanggou", "Qin", "Han",
             "Shangou", "Ji", "South and North", "Shui", "Tang", "Liao", "Song", "Jin",
             "Yuan", "Ming", "Qing", "Modern"};
 
@@ -223,14 +223,11 @@ public class MainActivity extends AppCompatActivity {
         Button searchResultBTN = searchdialog.findViewById(R.id.ResultButton);
 
         searchBTN.setOnClickListener(v -> {
-            if (isSearch) {
-                isSearch=false;
+            if(isSearch){
                 searchRestart();
-                searchBTN.setText("Search");
+                isSearch=false;
             }
-            else {
-                searchdialog.show();
-            }
+            searchdialog.show();
         });
 
         scategory = searchdialog.findViewById(R.id.LotCategory);
@@ -240,6 +237,10 @@ public class MainActivity extends AppCompatActivity {
 
         scategory.setOnItemClickListener((adapterView, view, i, l) -> {
             String item = adapterView.getItemAtPosition(i).toString();
+            if((scategory.getText().toString()).equals("Clear")){
+                scategory.setText("");
+                scategory.setHint("Select Category");
+            }
             Toast.makeText(MainActivity.this, "Item: " + item, Toast.LENGTH_SHORT).show();
         });
 
@@ -250,6 +251,10 @@ public class MainActivity extends AppCompatActivity {
 
         speriod.setOnItemClickListener((adapterView, view, i, l) -> {
             String item2 = adapterView.getItemAtPosition(i).toString();
+            if((speriod.getText().toString()).equals("Clear")){
+                speriod.setText("");
+                speriod.setHint("Select Period");
+            }
             Toast.makeText(MainActivity.this, "Item: " + item2, Toast.LENGTH_SHORT).show();
         });
 
@@ -259,38 +264,42 @@ public class MainActivity extends AppCompatActivity {
         searchCancelBTN.setOnClickListener(v -> searchRestart());
 
         searchResultBTN.setOnClickListener(v -> {
-            if(!isSearch) {
-                isSearch = true;
-                items.clear();
-                DatabaseReference mDatabase = FirebaseDatabase.getInstance("https://taam-1c732-default-rtdb.firebaseio.com/").getReference("Items");
-                mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            Item item = snapshot.getValue(Item.class);
-                            items.add(item);
-                        }
-                        int num = 0;
+            isSearch=true;
+            items.clear();
+            DatabaseReference mDatabase = FirebaseDatabase.getInstance("https://taam-1c732-default-rtdb.firebaseio.com/").getReference("Items");
+            mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                        if(!slotnum.getText().toString().isEmpty()){
-                            num = Integer.parseInt(slotnum.getText().toString());
-                        }
-
-                        removeLot(items, num);
-                        removeName(items, sname.getText().toString());
-                        removePeriod(items, speriod.getText().toString());
-                        removeCategory(items, scategory.getText().toString());
-                        searchBTN.setText("Exit Search");
-
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Item item = snapshot.getValue(Item.class);
+                        items.add(item);
                     }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.e("FirebaseError", databaseError.getMessage());
+                    int num = 0;
+                    boolean state = false;
+
+                    if(!slotnum.getText().toString().isEmpty()){
+                        num = Integer.parseInt(slotnum.getText().toString());
+                    } else {
+                        state = true;
                     }
-                });
-                searchdialog.dismiss();
-            }
+
+                    removeLot(items, num, state);
+                    removeName(items, sname.getText().toString());
+                    removePeriod(items, speriod.getText().toString());
+                    removeCategory(items, scategory.getText().toString());
+                    Intent intent = new Intent(MainActivity.this, ViewItemActivity.class);
+                    intent.putExtra("checkedItems", items);
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.e("FirebaseError", databaseError.getMessage());
+                }
+            });
+            searchdialog.dismiss();
         });
 
         // =========================================================================================
@@ -482,8 +491,8 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void removeLot(@NonNull ArrayList<Item> items, int x){
-        if(x!=0) {
+    public void removeLot(@NonNull ArrayList<Item> items, int x, boolean state){
+        if(!state) {
             items.removeIf(item -> x != item.getLotNumber());
         }
     }
