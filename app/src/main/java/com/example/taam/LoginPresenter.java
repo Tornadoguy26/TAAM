@@ -13,7 +13,7 @@ public class LoginPresenter {
     }
 
     public void login(User user) {
-        if (user.getEmail() == null || user.getPassword() == null || user.getEmail().isEmpty() || user.getPassword().isEmpty()) {
+        if (user.getEmail().isEmpty() || user.getPassword().isEmpty()) {
             mainActivity.onLoginFailure();
             return;
         }
