@@ -9,34 +9,32 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.taam.structures.User;
 
 import java.util.Objects;
 
 public class LoginDialog {
 
-    private MainActivity mainActivity;
-    private Dialog logindialog;
-    private TextView loginStatus;
+    private final MainActivity mainActivity;
+    private final Dialog loginDialog;
+    private final TextView loginStatus;
 
     public LoginDialog(MainActivity activity) {
         this.mainActivity = activity;
 
-        logindialog = new Dialog(activity);
-        logindialog.setContentView(R.layout.login_screen);
-        Objects.requireNonNull(logindialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        logindialog.setCancelable(false);
+        loginDialog = new Dialog(activity);
+        loginDialog.setContentView(R.layout.login_screen);
+        Objects.requireNonNull(loginDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        loginDialog.setCancelable(false);
 
-        Button adminCancelBtn = logindialog.findViewById(R.id.BackButton);
-        Button adminLoginBtn = logindialog.findViewById(R.id.LogButton);
+        Button adminCancelBtn = loginDialog.findViewById(R.id.BackButton);
+        Button adminLoginBtn = loginDialog.findViewById(R.id.LogButton);
 
-        EditText userEditText = logindialog.findViewById(R.id.LogUsername);
-        EditText passwordEditText = logindialog.findViewById(R.id.LogPassword);
-        CheckBox passwordVisibility = logindialog.findViewById(R.id.PasswordVis);
+        EditText userEditText = loginDialog.findViewById(R.id.LogUsername);
+        EditText passwordEditText = loginDialog.findViewById(R.id.LogPassword);
+        CheckBox passwordVisibility = loginDialog.findViewById(R.id.PasswordVis);
 
-        loginStatus = logindialog.findViewById(R.id.LogIncorrect);
+        loginStatus = loginDialog.findViewById(R.id.LogIncorrect);
 
         LoginPresenter loginPresenter = new LoginPresenter(this, DatabaseManager.getInstance());
 
@@ -45,7 +43,7 @@ public class LoginDialog {
             passwordEditText.setText("");
             passwordVisibility.setChecked(false);
             loginStatus.setText("");
-            logindialog.dismiss();
+            loginDialog.dismiss();
         });
 
         adminLoginBtn.setOnClickListener(v -> {
@@ -75,12 +73,12 @@ public class LoginDialog {
     }
 
     public void switchAdminStatus(boolean status) {
-        logindialog.dismiss();
+        loginDialog.dismiss();
         mainActivity.switchAdminStatus(status);
     }
 
     public void show() {
-        logindialog.show();
+        loginDialog.show();
     }
 
 }

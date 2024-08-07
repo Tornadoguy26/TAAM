@@ -9,13 +9,10 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.os.Environment;
-import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -30,7 +27,6 @@ import android.provider.Settings;
 
 import android.util.Log;
 import android.widget.Toast;
-import android.widget.AutoCompleteTextView;
 
 
 import androidx.activity.EdgeToEdge;
@@ -43,7 +39,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.taam.structures.Item;
-import com.example.taam.structures.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -51,7 +46,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 // For requesting permissions
 import androidx.core.app.ActivityCompat;
@@ -60,31 +54,10 @@ import androidx.core.content.ContextCompat;
 
 public class MainActivity extends AppCompatActivity {
 
-    // SEARCH =================
-
-    private boolean isSearch = false;
-    private EditText slotnum, sname;
-
-    private Dialog searchdialog;
-    ArrayList<Item> items = new ArrayList<>();
-
-    String[] categories = {"Clear", "Jade", "Paintings", "Calligraphy", "Rubbings", "Bronze",
-            "Brass and Copper", "Gold and Silvers", "Lacquer", "Enamels"};
-    String[] periods = {"Clear", "Xia", "Shang", "Zhou", "Chuanqiu", "Zhanggou", "Qin", "Han",
-            "Shangou", "Ji", "South and North", "Shui", "Tang", "Liao", "Song", "Jin",
-            "Yuan", "Ming", "Qing", "Modern"};
-
-    AutoCompleteTextView scategory;
-    ArrayAdapter<String> categoryItems;
-
-    AutoCompleteTextView speriod;
-    ArrayAdapter<String> periodItems;
-
-    // =======================
-
     private boolean isAdmin;
     private ArrayList<Item> itemDataSet;
     LoginDialog loginDialog;
+    SearchDialog searchDialog;
     PdfPresenter pdfPresenter;
 
     // GENERATE REPORT =================
@@ -134,98 +107,17 @@ public class MainActivity extends AppCompatActivity {
 
         TextView titleText = findViewById(R.id.titleTextView);
         if (isAdmin) titleText.setText(R.string.admin_screen_title);
-        // =========================================================================================
 
         // SEARCH ==================================================================================
+        searchDialog = new SearchDialog(this);
 
         Button searchBTN = findViewById(R.id.searchButton);
-
-        searchdialog = new Dialog(this);
-        searchdialog.setContentView(R.layout.search_input);
-        searchdialog.getWindow().setBackgroundDrawable((new ColorDrawable(Color.TRANSPARENT)));
-        searchdialog.setCancelable(false);
-
-        Button searchCancelBTN = searchdialog.findViewById(R.id.BackButton);
-        Button searchResultBTN = searchdialog.findViewById(R.id.ResultButton);
-
         searchBTN.setOnClickListener(v -> {
-            if(isSearch){
-                searchRestart();
-                isSearch=false;
+            if(searchDialog.isSearch()){
+                searchDialog.searchRestart();
+                searchDialog.setSearch(false);
             }
-            searchdialog.show();
-        });
-
-        scategory = searchdialog.findViewById(R.id.LotCategory);
-        categoryItems = new ArrayAdapter<>(this, R.layout.search_list, categories);
-
-        scategory.setAdapter(categoryItems);
-
-        scategory.setOnItemClickListener((adapterView, view, i, l) -> {
-            String item = adapterView.getItemAtPosition(i).toString();
-            if((scategory.getText().toString()).equals("Clear")){
-                scategory.setText("");
-                scategory.setHint("Select Category");
-            }
-            Toast.makeText(MainActivity.this, "Item: " + item, Toast.LENGTH_SHORT).show();
-        });
-
-        speriod = searchdialog.findViewById(R.id.LotPeriod);
-        periodItems = new ArrayAdapter<>(this, R.layout.search_list, periods);
-
-        speriod.setAdapter(periodItems);
-
-        speriod.setOnItemClickListener((adapterView, view, i, l) -> {
-            String item2 = adapterView.getItemAtPosition(i).toString();
-            if((speriod.getText().toString()).equals("Clear")){
-                speriod.setText("");
-                speriod.setHint("Select Period");
-            }
-            Toast.makeText(MainActivity.this, "Item: " + item2, Toast.LENGTH_SHORT).show();
-        });
-
-        slotnum = searchdialog.findViewById(R.id.LotNum);
-        sname = searchdialog.findViewById(R.id.LotName);
-
-        searchCancelBTN.setOnClickListener(v -> searchRestart());
-
-        searchResultBTN.setOnClickListener(v -> {
-            isSearch=true;
-            items.clear();
-            DatabaseReference mDatabase = FirebaseDatabase.getInstance("https://taam-1c732-default-rtdb.firebaseio.com/").getReference("Items");
-            mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        Item item = snapshot.getValue(Item.class);
-                        items.add(item);
-                    }
-
-                    int num = 0;
-                    boolean state = false;
-
-                    if(!slotnum.getText().toString().isEmpty()){
-                        num = Integer.parseInt(slotnum.getText().toString());
-                    } else {
-                        state = true;
-                    }
-
-                    removeLot(items, num, state);
-                    removeName(items, sname.getText().toString());
-                    removePeriod(items, speriod.getText().toString());
-                    removeCategory(items, scategory.getText().toString());
-                    Intent intent = new Intent(MainActivity.this, ViewItemActivity.class);
-                    intent.putExtra("checkedItems", items);
-                    startActivity(intent);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.e("FirebaseError", databaseError.getMessage());
-                }
-            });
-            searchdialog.dismiss();
+            searchDialog.show();
         });
 
         // =========================================================================================
@@ -279,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button buttonRemove = findViewById(R.id.removeButton);
         buttonRemove.setOnClickListener(v -> {
-            if(mainCardsAdapter.getCheckedItems().size() == 0) return;
+            if(mainCardsAdapter.getCheckedItems().isEmpty()) return;
             // make pop up confirmation
             new AlertDialog.Builder(this)
                     .setTitle("Delete Confirmation")
@@ -407,54 +299,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void removeLot(@NonNull ArrayList<Item> items, int x, boolean state){
-        if(!state) {
-            items.removeIf(item -> x != item.getLotNumber());
-        }
-    }
-    public void removeName(@NonNull ArrayList<Item> items, String x){
-        if(!x.isEmpty()) {
-            items.removeIf(item -> !x.equals(item.getName()));
-        }
-    }
-    public void removePeriod(@NonNull ArrayList<Item> items, String x) {
-        if(!x.isEmpty()) {
-            items.removeIf(item -> !x.equals(item.getPeriod()));
-        }
-    }
-    public void removeCategory(@NonNull ArrayList<Item> items, String x) {
-        if(!x.isEmpty()) {
-            items.removeIf(item -> !x.equals(item.getCategory()));
-        }
-    }
 
-    public void searchRestart(){
-
-        slotnum.setText("");
-        sname.setText("");
-        scategory.setText("");
-        speriod.setText("");
-
-        if (slotnum != null) {
-            slotnum.clearFocus();
-        }
-
-        if (sname != null) {
-            sname.clearFocus();
-        }
-
-        if (scategory != null) {
-            scategory.clearFocus();
-        }
-
-        if (speriod != null) {
-            speriod.clearFocus();
-        }
-
-        scategory.setAdapter(categoryItems);
-        speriod.setAdapter(periodItems);
-        searchdialog.dismiss();
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

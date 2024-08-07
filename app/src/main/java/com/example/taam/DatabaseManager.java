@@ -18,15 +18,24 @@ import java.util.List;
 import java.util.Objects;
 
 public class DatabaseManager {
+
     static DatabaseManager databaseManager;
     private static FirebaseDatabase db;
     private static DatabaseReference dbRef;
     private static FirebaseStorage storage;
     private static StorageReference storageRef;
     private static FirebaseAuth auth;
-    private DatabaseManager() {
 
+    public final static String[] categories, periods;
+    static {
+        categories = new String[]{"Clear", "Jade", "Paintings", "Calligraphy", "Rubbings", "Bronze",
+                "Brass and Copper", "Gold and Silvers", "Lacquer", "Enamels"};
+        periods = new String[]{"Clear", "Xia", "Shang", "Zhou", "Chuanqiu", "Zhanggou", "Qin", "Han",
+                "Shangou", "Ji", "South and North", "Shui", "Tang", "Liao", "Song", "Jin",
+                "Yuan", "Ming", "Qing", "Modern"};
     }
+
+    private DatabaseManager() {}
 
     public static DatabaseManager getInstance() {
         if (databaseManager == null) {
