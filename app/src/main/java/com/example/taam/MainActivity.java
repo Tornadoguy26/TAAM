@@ -37,6 +37,9 @@ import android.util.Log;
 import android.widget.Toast;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -44,6 +47,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import android.util.Log;
+import android.widget.Toast;
 
 
 import androidx.activity.EdgeToEdge;
@@ -84,7 +88,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 
-
 public class MainActivity extends AppCompatActivity {
 
     // LOGIN =================
@@ -93,6 +96,30 @@ public class MainActivity extends AppCompatActivity {
     private Dialog logindialog;
     private LoginPresenter loginPresenter;
     private PdfPresenter pdfPresenter;
+    // =======================
+
+    // SEARCH =================
+
+    private boolean isSearch = false;
+    private EditText slotnum, sname;
+
+    private Dialog searchdialog;
+    ArrayList<Item> items = new ArrayList<>();
+
+    String[] categories = {"Jade", "Paintings", "Calligraphy", "Rubbings", "Bronze",
+            "Brass and Copper", "Gold and Silvers", "Lacquer", "Enamels"};
+    String[] periods = {"Xia", "Shang", "Zhou", "Chuanqiu", "Zhanggou", "Qin", "Han",
+            "Shangou", "Ji", "South and North", "Shui", "Tang", "Liao", "Song", "Jin",
+            "Yuan", "Ming", "Qing", "Modern"};
+
+    AutoCompleteTextView scategory;
+    ArrayAdapter<String> categoryItems;
+
+    AutoCompleteTextView speriod;
+    ArrayAdapter<String> periodItems;
+
+    private DatabaseReference mDatabase;
+
     // =======================
 
     private boolean isAdmin;
@@ -126,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        // LOGIN ==================================================================================
         Button adminBTN = findViewById(R.id.adminLoginButton);
 
         logindialog = new Dialog(this);
@@ -180,6 +208,92 @@ public class MainActivity extends AppCompatActivity {
                 apassword.setTransformationMethod(new PasswordTransformationMethod());
             }
         });
+        // =========================================================================================
+
+        // SEARCH ==================================================================================
+
+        Button searchBTN = findViewById(R.id.searchButton);
+
+        searchdialog = new Dialog(this);
+        searchdialog.setContentView(R.layout.search_input);
+        searchdialog.getWindow().setBackgroundDrawable((new ColorDrawable(Color.TRANSPARENT)));
+        searchdialog.setCancelable(false);
+
+        Button searchCancelBTN = searchdialog.findViewById(R.id.BackButton);
+        Button searchResultBTN = searchdialog.findViewById(R.id.ResultButton);
+
+        searchBTN.setOnClickListener(v -> {
+            if (isSearch) {
+                isSearch=false;
+                searchRestart();
+                searchBTN.setText("Search");
+            }
+            else {
+                searchdialog.show();
+            }
+        });
+
+        scategory = searchdialog.findViewById(R.id.LotCategory);
+        categoryItems = new ArrayAdapter<>(this, R.layout.search_list, categories);
+
+        scategory.setAdapter(categoryItems);
+
+        scategory.setOnItemClickListener((adapterView, view, i, l) -> {
+            String item = adapterView.getItemAtPosition(i).toString();
+            Toast.makeText(MainActivity.this, "Item: " + item, Toast.LENGTH_SHORT).show();
+        });
+
+        speriod = searchdialog.findViewById(R.id.LotPeriod);
+        periodItems = new ArrayAdapter<>(this, R.layout.search_list, periods);
+
+        speriod.setAdapter(periodItems);
+
+        speriod.setOnItemClickListener((adapterView, view, i, l) -> {
+            String item2 = adapterView.getItemAtPosition(i).toString();
+            Toast.makeText(MainActivity.this, "Item: " + item2, Toast.LENGTH_SHORT).show();
+        });
+
+        slotnum = searchdialog.findViewById(R.id.LotNum);
+        sname = searchdialog.findViewById(R.id.LotName);
+
+        searchCancelBTN.setOnClickListener(v -> searchRestart());
+
+        searchResultBTN.setOnClickListener(v -> {
+            if(!isSearch) {
+                isSearch = true;
+                items.clear();
+                DatabaseReference mDatabase = FirebaseDatabase.getInstance("https://taam-1c732-default-rtdb.firebaseio.com/").getReference("Items");
+                mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Item item = snapshot.getValue(Item.class);
+                            items.add(item);
+                        }
+                        int num = 0;
+
+                        if(!slotnum.getText().toString().isEmpty()){
+                            num = Integer.parseInt(slotnum.getText().toString());
+                        }
+
+                        removeLot(items, num);
+                        removeName(items, sname.getText().toString());
+                        removePeriod(items, speriod.getText().toString());
+                        removeCategory(items, scategory.getText().toString());
+                        searchBTN.setText("Exit Search");
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e("FirebaseError", databaseError.getMessage());
+                    }
+                });
+                searchdialog.dismiss();
+            }
+        });
+
+        // =========================================================================================
 
         Button buttonAdd = findViewById(R.id.addButton);
         buttonAdd.setOnClickListener(v -> {
@@ -368,6 +482,55 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void removeLot(@NonNull ArrayList<Item> items, int x){
+        if(x!=0) {
+            items.removeIf(item -> x != item.getLotNumber());
+        }
+    }
+    public void removeName(@NonNull ArrayList<Item> items, String x){
+        if(!x.isEmpty()) {
+            items.removeIf(item -> !x.equals(item.getName()));
+        }
+    }
+    public void removePeriod(@NonNull ArrayList<Item> items, String x) {
+        if(!x.isEmpty()) {
+            items.removeIf(item -> !x.equals(item.getPeriod()));
+        }
+    }
+    public void removeCategory(@NonNull ArrayList<Item> items, String x) {
+        if(!x.isEmpty()) {
+            items.removeIf(item -> !x.equals(item.getCategory()));
+        }
+    }
+
+    public void searchRestart(){
+
+        slotnum.setText("");
+        sname.setText("");
+        scategory.setText("");
+        speriod.setText("");
+
+        if (slotnum != null) {
+            slotnum.clearFocus();
+        }
+
+        if (sname != null) {
+            sname.clearFocus();
+        }
+
+        if (scategory != null) {
+            scategory.clearFocus();
+        }
+
+        if (speriod != null) {
+            speriod.clearFocus();
+        }
+
+        scategory.setAdapter(categoryItems);
+        speriod.setAdapter(periodItems);
+        searchdialog.dismiss();
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -384,4 +547,5 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
+
 
