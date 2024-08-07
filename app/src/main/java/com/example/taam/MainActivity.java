@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button adminCancelBTN = logindialog.findViewById(R.id.BackButton);
         Button adminLoginBTN = logindialog.findViewById(R.id.LogButton);
-        loginPresenter = new LoginPresenter(this);
+        loginPresenter = new LoginPresenter(this, new LoginModel());
         pdfPresenter = new PdfPresenter(this);
 
         auser = logindialog.findViewById(R.id.LogUsername);

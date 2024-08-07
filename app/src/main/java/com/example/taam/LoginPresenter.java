@@ -1,15 +1,14 @@
 package com.example.taam;
 
 import com.example.taam.structures.User;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginPresenter {
     private final MainActivity mainActivity;
     private final LoginModel loginModel;
 
-    public LoginPresenter(MainActivity mainActivity) {
+    public LoginPresenter(MainActivity mainActivity, LoginModel loginModel) {
         this.mainActivity = mainActivity;
-        this.loginModel = new LoginModel();
+        this.loginModel = loginModel;
     }
 
     public void login(User user) {
