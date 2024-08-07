@@ -18,7 +18,6 @@ public class DatabaseManager {
     private static DatabaseReference dbRef;
     private static FirebaseStorage storage;
     private static StorageReference storageRef;
-    private Context context;
     private DatabaseManager() {
 
     }
@@ -40,13 +39,10 @@ public class DatabaseManager {
     }
 
     public Task<Void> deleteItemImageByLotNumber(int lotNumber) {
-        StorageReference itemRef = storageRef.child(Integer.toString(lotNumber)
-                + ".png");
-
-// Delete the file
+        StorageReference itemRef = storageRef.child(lotNumber + ".png");
         return itemRef.delete();
     }
-    public void deleteItems(ArrayList<Item> items) {
+    public void deleteItems(ArrayList<Item> items, Context context) {
         for (int i = 0; i < items.size(); i++) {
             deleteItemInfoByLotNumber(items.get(i).getLotNumber()).addOnCompleteListener(task -> {
                 if (!task.isSuccessful()) {
