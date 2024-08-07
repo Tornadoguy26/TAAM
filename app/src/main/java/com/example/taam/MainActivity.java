@@ -40,7 +40,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-
+import java.util.Iterator;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -53,9 +54,12 @@ public class MainActivity extends AppCompatActivity {
     // =======================
 
     // SEARCH =================
+
+    private boolean isSearch = false;
     private EditText slotnum, sname;
 
     private Dialog searchdialog;
+    ArrayList<Item> items = new ArrayList<>();
 
     String[] categories = {"Jade", "Paintings", "Calligraphy", "Rubbings", "Bronze",
             "Brass and Copper", "Gold and Silvers", "Lacquer", "Enamels"};
@@ -68,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
 
     AutoCompleteTextView speriod;
     ArrayAdapter<String> adapterItems2;
+
+    private DatabaseReference mDatabase;
 
     // =======================
 
@@ -162,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
 
         searchBTN.setOnClickListener(v -> {
             searchdialog.show();
+            System.out.println(2);
         });
 
 
@@ -199,11 +206,60 @@ public class MainActivity extends AppCompatActivity {
             sname.setText("");
             scategory.setText("");
             speriod.setText("");
+            speriod.setAdapter(adapterItems);
+            speriod.setAdapter(adapterItems2);
             searchdialog.dismiss();
+            System.out.println(2);
         });
 
         searchResultBTN.setOnClickListener(v -> {
+            isSearch=true;
+            DatabaseReference mDatabase = FirebaseDatabase.getInstance("https://taam-1c732-default-rtdb.firebaseio.com/").getReference("Items");
+            mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Item item = snapshot.getValue(Item.class);
+                        items.add(item);
+                    }
 
+                    Log.d("Testlot# for lot in search", slotnum.getText().toString());
+                    Log.d("Testname for lot in search", sname.getText().toString());
+                    Log.d("Testperiod for lot in search", speriod.getText().toString());
+                    Log.d("Testcategory for lot in search", scategory.getText().toString());
+
+                    removeLot(items, "");
+                    removeName(items, "");
+                    removePeriod(items, "Jade");
+                    removeCategory(items, "Ji");
+
+                    for(Item x: items){
+                        Log.d("Test for lot in search", "Tornado ");
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.e("FirebaseError", databaseError.getMessage());
+                }
+            });
+            slotnum.setText("");
+            sname.setText("");
+            scategory.setText("");
+            speriod.setText("");
+            speriod.setAdapter(adapterItems);
+            speriod.setAdapter(adapterItems2);
+            searchdialog.dismiss();
+            /*
+            Log.d("Test for lot in search", "Tornado2");
+            if(items.isEmpty()){
+                Log.d("Test for lot in search", "Tornado3");
+            }
+            for(Item x: items){
+                Log.d("Test for lot in search", "Tornado ");
+            }
+             */
         });
 
         // =========================================================================================
@@ -268,4 +324,27 @@ public class MainActivity extends AppCompatActivity {
         logindialog.dismiss(); finish();
         startActivity(intent);
     }
+
+    public void removeLot(@NonNull ArrayList<Item> items, String x){
+        if(!x.equals("")) {
+            items.removeIf(item -> !x.equals(item.getLotNumber()));
+        }
+    }
+    public void removeName(@NonNull ArrayList<Item> items, String x){
+        if(!x.equals("")) {
+            items.removeIf(item -> !x.equals(item.getName()));
+        }
+    }
+    public void removePeriod(@NonNull ArrayList<Item> items, String x) {
+        if(!x.equals("")) {
+            items.removeIf(item -> !x.equals(item.getPeriod()));
+        }
+    }
+    public void removeCategory(@NonNull ArrayList<Item> items, String x) {
+        if(!x.equals("")) {
+            items.removeIf(item -> !x.equals(item.getCategory()));
+        }
+    }
 }
+
+

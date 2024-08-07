@@ -237,7 +237,6 @@
                 android:background="@drawable/logintext"
                 android:ems="10"
                 android:hint="Select Category"
-                android:text=" "
                 android:inputType="none" />
 
 
@@ -261,7 +260,6 @@
                 android:background="@drawable/logintext"
                 android:ems="10"
                 android:hint="Select Period"
-                android:text=" "
                 android:inputType="none" />
 
 
