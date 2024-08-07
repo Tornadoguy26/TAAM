@@ -45,6 +45,8 @@ dependencies {
     implementation(libs.recyclerview)
     implementation(libs.firebase.database)
     testImplementation(libs.junit)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.robolectric)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation(platform(libs.firebase.bom))
