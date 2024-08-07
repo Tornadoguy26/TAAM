@@ -132,6 +132,7 @@ public class AddItemActivity extends AppCompatActivity
                                 Toast.makeText(AddItemActivity.this, "Failed to upload image!", Toast.LENGTH_SHORT).show();
                             }).addOnSuccessListener(taskSnapshot -> Toast.makeText(AddItemActivity.this, "Image has been uploaded!", Toast.LENGTH_SHORT).show());
                         }
+                        finish();
                     }
                 });
 
@@ -140,6 +141,7 @@ public class AddItemActivity extends AppCompatActivity
             }
 
         });
+
     }
     public static String getFileExtension(Context context, Uri uri) {
         String extension = null;

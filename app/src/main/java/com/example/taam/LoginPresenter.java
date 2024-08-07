@@ -2,7 +2,6 @@ package com.example.taam;
 
 import com.example.taam.structures.User;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class LoginPresenter {
     private final MainActivity mainActivity;

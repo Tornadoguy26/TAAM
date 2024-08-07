@@ -70,11 +70,71 @@ Documentation of progess and tasks for the development of this app.
 
   **1. What have we completed since the last meeting?**
     
-    User stories 2, 3, 14 and 17 (Admin login Ui and functionality fb=irebase realtime database with card display + scroll).
+    User stories 2, 3, 14 and 17 (Admin login Ui and functionality firebase realtime database with card display + scroll).
     
   **2. What will we finish before the next meeting?**
 
     Sprint 1.
+
+  **3. Are there any obstacles? If so, what are they?**
+     
+    N/A.
+##
+
+### 2024-07-29
+
+  **1. What have we completed since the last meeting?**
+    
+    Completed Sprint 1 and assign user stories for Sprint 2.
+    
+  **2. What will we finish before the next meeting?**
+
+    Merging of user stories into main and start Sprint 2.
+
+  **3. Are there any obstacles? If so, what are they?**
+     
+    N/A.
+##
+
+### 2024-07-31
+
+  **1. What have we completed since the last meeting?**
+    
+    Completed Sprint 1 merging into main + fixed bugs in login
+    
+  **2. What will we finish before the next meeting?**
+
+    Search feature and tasks in remove and pdf generation
+
+  **3. Are there any obstacles? If so, what are they?**
+     
+    N/A.
+##
+
+### 2024-08-02
+
+  **1. What have we completed since the last meeting?**
+    
+    Completed Search dialog.
+    
+  **2. What will we finish before the next meeting?**
+
+    Tasks in Search, Remove and Report.
+
+  **3. Are there any obstacles? If so, what are they?**
+     
+    Download Permissions for Report.
+##
+
+### 2024-08-05
+
+  **1. What have we completed since the last meeting?**
+    
+    Finished main functionality and requirements.
+    
+  **2. What will we finish before the next meeting?**
+
+    Merge into Main Branch + Login-Module Testing.
 
   **3. Are there any obstacles? If so, what are they?**
      
