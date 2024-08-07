@@ -40,8 +40,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -68,10 +66,10 @@ public class MainActivity extends AppCompatActivity {
             "Yuan", "Ming", "Qing", "Modern"};
 
     AutoCompleteTextView scategory;
-    ArrayAdapter<String> adapterItems;
+    ArrayAdapter<String> categoryItems;
 
     AutoCompleteTextView speriod;
-    ArrayAdapter<String> adapterItems2;
+    ArrayAdapter<String> periodItems;
 
     private DatabaseReference mDatabase;
 
@@ -167,99 +165,74 @@ public class MainActivity extends AppCompatActivity {
         Button searchResultBTN = searchdialog.findViewById(R.id.ResultButton);
 
         searchBTN.setOnClickListener(v -> {
-            searchdialog.show();
-            System.out.println(2);
-        });
-
-
-        scategory = searchdialog.findViewById(R.id.auto_complete_txt);
-        adapterItems = new ArrayAdapter<String>(this, R.layout.search_list, categories);
-
-        scategory.setAdapter(adapterItems);
-
-        scategory.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l){
-                String item = adapterView.getItemAtPosition(i).toString();
-                Toast.makeText(MainActivity.this, "Item: " + item, Toast.LENGTH_SHORT).show();
+            if (isSearch) {
+                isSearch=false;
+                searchRestart();
+                searchBTN.setText("Search");
+            }
+            else {
+                searchdialog.show();
             }
         });
 
-        speriod = searchdialog.findViewById(R.id.auto_complete_txt2);
-        adapterItems2 = new ArrayAdapter<String>(this, R.layout.search_list, periods);
+        scategory = searchdialog.findViewById(R.id.LotCategory);
+        categoryItems = new ArrayAdapter<>(this, R.layout.search_list, categories);
 
-        speriod.setAdapter(adapterItems2);
+        scategory.setAdapter(categoryItems);
 
-        speriod.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l){
-                String item2 = adapterView.getItemAtPosition(i).toString();
-                Toast.makeText(MainActivity.this, "Item: " + item2, Toast.LENGTH_SHORT).show();
-            }
+        scategory.setOnItemClickListener((adapterView, view, i, l) -> {
+            String item = adapterView.getItemAtPosition(i).toString();
+            Toast.makeText(MainActivity.this, "Item: " + item, Toast.LENGTH_SHORT).show();
         });
 
-        slotnum = searchdialog.findViewById(R.id.auto_complete_txt00);
-        sname = searchdialog.findViewById(R.id.auto_complete_txt0);
+        speriod = searchdialog.findViewById(R.id.LotPeriod);
+        periodItems = new ArrayAdapter<>(this, R.layout.search_list, periods);
 
-        searchCancelBTN.setOnClickListener(v -> {
-            slotnum.setText("");
-            sname.setText("");
-            scategory.setText("");
-            speriod.setText("");
-            speriod.setAdapter(adapterItems);
-            speriod.setAdapter(adapterItems2);
-            searchdialog.dismiss();
-            System.out.println(2);
+        speriod.setAdapter(periodItems);
+
+        speriod.setOnItemClickListener((adapterView, view, i, l) -> {
+            String item2 = adapterView.getItemAtPosition(i).toString();
+            Toast.makeText(MainActivity.this, "Item: " + item2, Toast.LENGTH_SHORT).show();
         });
+
+        slotnum = searchdialog.findViewById(R.id.LotNum);
+        sname = searchdialog.findViewById(R.id.LotName);
+
+        searchCancelBTN.setOnClickListener(v -> searchRestart());
 
         searchResultBTN.setOnClickListener(v -> {
-            isSearch=true;
-            DatabaseReference mDatabase = FirebaseDatabase.getInstance("https://taam-1c732-default-rtdb.firebaseio.com/").getReference("Items");
-            mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        Item item = snapshot.getValue(Item.class);
-                        items.add(item);
+            if(!isSearch) {
+                isSearch = true;
+                items.clear();
+                DatabaseReference mDatabase = FirebaseDatabase.getInstance("https://taam-1c732-default-rtdb.firebaseio.com/").getReference("Items");
+                mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Item item = snapshot.getValue(Item.class);
+                            items.add(item);
+                        }
+                        int num = 0;
+
+                        if(!slotnum.getText().toString().isEmpty()){
+                            num = Integer.parseInt(slotnum.getText().toString());
+                        }
+
+                        removeLot(items, num);
+                        removeName(items, sname.getText().toString());
+                        removePeriod(items, speriod.getText().toString());
+                        removeCategory(items, scategory.getText().toString());
+                        searchBTN.setText("Exit Search");
+
                     }
 
-                    Log.d("Testlot# for lot in search", slotnum.getText().toString());
-                    Log.d("Testname for lot in search", sname.getText().toString());
-                    Log.d("Testperiod for lot in search", speriod.getText().toString());
-                    Log.d("Testcategory for lot in search", scategory.getText().toString());
-
-                    removeLot(items, "");
-                    removeName(items, "");
-                    removePeriod(items, "Jade");
-                    removeCategory(items, "Ji");
-
-                    for(Item x: items){
-                        Log.d("Test for lot in search", "Tornado ");
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e("FirebaseError", databaseError.getMessage());
                     }
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.e("FirebaseError", databaseError.getMessage());
-                }
-            });
-            slotnum.setText("");
-            sname.setText("");
-            scategory.setText("");
-            speriod.setText("");
-            speriod.setAdapter(adapterItems);
-            speriod.setAdapter(adapterItems2);
-            searchdialog.dismiss();
-            /*
-            Log.d("Test for lot in search", "Tornado2");
-            if(items.isEmpty()){
-                Log.d("Test for lot in search", "Tornado3");
+                });
+                searchdialog.dismiss();
             }
-            for(Item x: items){
-                Log.d("Test for lot in search", "Tornado ");
-            }
-             */
         });
 
         // =========================================================================================
@@ -325,25 +298,53 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void removeLot(@NonNull ArrayList<Item> items, String x){
-        if(!x.equals("")) {
-            items.removeIf(item -> !x.equals(item.getLotNumber()));
+    public void removeLot(@NonNull ArrayList<Item> items, int x){
+        if(x!=0) {
+            items.removeIf(item -> x != item.getLotNumber());
         }
     }
     public void removeName(@NonNull ArrayList<Item> items, String x){
-        if(!x.equals("")) {
+        if(!x.isEmpty()) {
             items.removeIf(item -> !x.equals(item.getName()));
         }
     }
     public void removePeriod(@NonNull ArrayList<Item> items, String x) {
-        if(!x.equals("")) {
+        if(!x.isEmpty()) {
             items.removeIf(item -> !x.equals(item.getPeriod()));
         }
     }
     public void removeCategory(@NonNull ArrayList<Item> items, String x) {
-        if(!x.equals("")) {
+        if(!x.isEmpty()) {
             items.removeIf(item -> !x.equals(item.getCategory()));
         }
+    }
+
+    public void searchRestart(){
+
+        slotnum.setText("");
+        sname.setText("");
+        scategory.setText("");
+        speriod.setText("");
+
+        if (slotnum != null) {
+            slotnum.clearFocus();
+        }
+
+        if (sname != null) {
+            sname.clearFocus();
+        }
+
+        if (scategory != null) {
+            scategory.clearFocus();
+        }
+
+        if (speriod != null) {
+            speriod.clearFocus();
+        }
+
+        scategory.setAdapter(categoryItems);
+        speriod.setAdapter(periodItems);
+        searchdialog.dismiss();
     }
 }
 
