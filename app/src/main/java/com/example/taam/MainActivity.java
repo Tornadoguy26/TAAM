@@ -12,12 +12,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.method.PasswordTransformationMethod;
@@ -35,19 +30,7 @@ import android.provider.Settings;
 
 import android.util.Log;
 import android.widget.Toast;
-import android.text.method.PasswordTransformationMethod;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import android.util.Log;
-import android.widget.Toast;
 
 
 import androidx.activity.EdgeToEdge;
@@ -68,35 +51,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 // For requesting permissions
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.taam.structures.Item;
-import com.example.taam.structures.User;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-
-
 public class MainActivity extends AppCompatActivity {
-
-    // LOGIN =================
-    private EditText auser, apassword;
-
-    private Dialog logindialog;
-    private LoginPresenter loginPresenter;
-    private PdfPresenter pdfPresenter;
-    // =======================
 
     // SEARCH =================
 
@@ -118,14 +80,12 @@ public class MainActivity extends AppCompatActivity {
     AutoCompleteTextView speriod;
     ArrayAdapter<String> periodItems;
 
-    private DatabaseReference mDatabase;
-
     // =======================
 
     private boolean isAdmin;
-
     private ArrayList<Item> itemDataSet;
-    private MainCardsAdapter cardsAdapter;
+    LoginDialog loginDialog;
+    PdfPresenter pdfPresenter;
 
     // GENERATE REPORT =================
     private static final int PERMISSION_REQUEST_CODE = 786;
@@ -154,24 +114,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // LOGIN ==================================================================================
-        Button adminBTN = findViewById(R.id.adminLoginButton);
 
-        logindialog = new Dialog(this);
-        logindialog.setContentView(R.layout.login_screen);
-        logindialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        logindialog.setCancelable(false);
+        loginDialog = new LoginDialog(this);
 
-        Button adminCancelBTN = logindialog.findViewById(R.id.BackButton);
-        Button adminLoginBTN = logindialog.findViewById(R.id.LogButton);
-        loginPresenter = new LoginPresenter(this, new LoginModel());
         pdfPresenter = new PdfPresenter(this);
-
-        auser = logindialog.findViewById(R.id.LogUsername);
-        apassword = logindialog.findViewById(R.id.LogPassword);
-        CheckBox togglevis = logindialog.findViewById(R.id.PasswordVis);
-
-        TextView titleText = findViewById(R.id.titleTextView);
-        if (isAdmin) titleText.setText(R.string.admin_screen_title);
+        Button adminBtn = findViewById(R.id.adminLoginButton);
 
         LinearLayout adminLayout = findViewById(R.id.adminFeaturesLayout);
         for (int i = 0; i < adminLayout.getChildCount(); i++) {
@@ -179,35 +126,14 @@ public class MainActivity extends AppCompatActivity {
             child.setEnabled(isAdmin);
         }
 
-        if (isAdmin) adminBTN.setText(R.string.back_text);
-        adminBTN.setOnClickListener(v -> {
+        if (isAdmin) adminBtn.setText(R.string.back_text);
+        adminBtn.setOnClickListener(v -> {
             if (isAdmin) { switchAdminStatus(false); }
-            else { logindialog.show(); }
+            else { loginDialog.show(); }
         });
 
-        adminCancelBTN.setOnClickListener(v -> {
-            auser.setText("");
-            apassword.setText("");
-            togglevis.setChecked(false);
-            TextView loginStatus = logindialog.findViewById(R.id.LogIncorrect);
-            loginStatus.setText("");
-            logindialog.dismiss();
-        });
-
-        adminLoginBTN.setOnClickListener(v -> {
-            String email = auser.getText().toString().trim();
-            String password = apassword.getText().toString().trim();
-            User user = new User(email, password);
-            loginPresenter.login(user);
-        });
-
-        togglevis.setOnCheckedChangeListener((v, flag) -> {
-            if(flag){
-                apassword.setTransformationMethod(null);
-            } else {
-                apassword.setTransformationMethod(new PasswordTransformationMethod());
-            }
-        });
+        TextView titleText = findViewById(R.id.titleTextView);
+        if (isAdmin) titleText.setText(R.string.admin_screen_title);
         // =========================================================================================
 
         // SEARCH ==================================================================================
@@ -472,22 +398,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onLoginSuccess(){
-        TextView loginStatus = logindialog.findViewById(R.id.LogIncorrect);
-        loginStatus.setText("Login Successful");
-        loginStatus.setTextColor(Color.GREEN);
-    }
 
-    public void onLoginFailure(){
-        TextView loginStatus = logindialog.findViewById(R.id.LogIncorrect);
-        loginStatus.setText("Login Failed: invalid credentials");
-        loginStatus.setTextColor(Color.RED);
-    }
 
     public void switchAdminStatus(boolean setAdmin) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("admin_status", setAdmin);
-        logindialog.dismiss(); finish();
+        finish();
         startActivity(intent);
     }
 

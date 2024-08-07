@@ -32,25 +32,12 @@ import java.util.List;
 
 public class PdfPresenter {
     private final MainActivity mainActivity;
-    private final FirebaseAuth auth;
     private static final String TAG = "MainPresenter";
 
     public PdfPresenter(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
-        this.auth = FirebaseAuth.getInstance();
     }
 
-    public void login(User user) {
-        auth.signInWithEmailAndPassword(user.getEmail(), user.getPassword())
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        mainActivity.onLoginSuccess();
-                        mainActivity.switchAdminStatus(true);
-                    } else {
-                        mainActivity.onLoginFailure();
-                    }
-                });
-    }
 
     public void generateReport(String searchBy, String searchValue, boolean descPic, ArrayList<Item> itemDataSet) {
         ArrayList<Item> items = new ArrayList<>(itemDataSet);
