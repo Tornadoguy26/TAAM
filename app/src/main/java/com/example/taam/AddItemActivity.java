@@ -162,10 +162,10 @@ public class AddItemActivity extends AppCompatActivity
         // intent of the type image
         Intent i = new Intent();
         Intent intent = new Intent();
-        intent.setType("image/*");
+        intent.setType("*/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
 
-        String[] uploadTypes = {"image/*"};
+        String[] uploadTypes = {"image/*", "video/*"};
         intent.putExtra(Intent.EXTRA_MIME_TYPES, uploadTypes);
 
         startActivityForResult(Intent.createChooser(intent, "Select Media File"), 200);
