@@ -3,26 +3,26 @@ package com.example.taam;
 import com.example.taam.structures.User;
 
 public class LoginPresenter {
-    private final MainActivity mainActivity;
-    private final LoginModel loginModel;
+    private final LoginDialog loginDialog;
+    private final DatabaseManager model;
 
-    public LoginPresenter(MainActivity mainActivity, LoginModel loginModel) {
-        this.mainActivity = mainActivity;
-        this.loginModel = loginModel;
+    public LoginPresenter(LoginDialog loginDialog, DatabaseManager model) {
+        this.loginDialog = loginDialog;
+        this.model = model;
     }
 
     public void login(User user) {
         if (user.getEmail().isEmpty() || user.getPassword().isEmpty()) {
-            mainActivity.onLoginFailure();
+            loginDialog.onLoginFailure();
             return;
         }
 
-        loginModel.loginQuery(user.getEmail(), user.getPassword()).addOnCompleteListener(task -> {
+        model.loginQuery(user.getEmail(), user.getPassword()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                mainActivity.onLoginSuccess();
-                mainActivity.switchAdminStatus(true);
+                loginDialog.onLoginSuccess();
+                loginDialog.switchAdminStatus(true);
             } else {
-                mainActivity.onLoginFailure();
+                loginDialog.onLoginFailure();
             }
         });
     }
