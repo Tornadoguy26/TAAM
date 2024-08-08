@@ -68,12 +68,25 @@ public class MainActivity extends AppCompatActivity {
 
         Button buttonAdd = findViewById(R.id.addButton);
         Button buttonRemove = findViewById(R.id.removeButton);
+        Button reportButton = findViewById(R.id.reportButton);
 
         // Only enable admin buttons if we are admin
         LinearLayout adminLayout = findViewById(R.id.adminFeaturesLayout);
         for (int i = 0; i < adminLayout.getChildCount(); i++) {
             View child = adminLayout.getChildAt(i);
             child.setEnabled(isAdmin);
+        }
+
+        if (!isAdmin) {
+            buttonAdd.setVisibility(View.GONE);
+            buttonRemove.setVisibility(View.GONE);
+            reportButton.setVisibility(View.GONE);
+        }
+
+        if (isAdmin) {
+            buttonAdd.setVisibility(View.VISIBLE);
+            buttonRemove.setVisibility(View.VISIBLE);
+            reportButton.setVisibility(View.VISIBLE);
         }
 
         // If we are logged in, change button so we can log out
@@ -150,7 +163,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Dialog to generate report
         reportDialog = new ReportDialog(this);
-        Button reportButton = findViewById(R.id.reportButton);
         reportButton.setOnClickListener(v -> {
             if (!Environment.isExternalStorageManager()) { requestStoragePermission(); }
             reportDialog.show(itemDataSet);
