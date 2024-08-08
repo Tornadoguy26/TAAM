@@ -217,6 +217,7 @@ public class SearchDialog {
 
     public static boolean isSimilar(String x, String y) {
 
+
         String big;
         String small;
         int n = 0, m = 0;
@@ -236,6 +237,11 @@ public class SearchDialog {
             n = y.length();
             big = y;
             small = x;
+        }
+
+        boolean Sub = big.toLowerCase().contains(small.toLowerCase());
+        if(Sub){
+            return true;
         }
 
         int j = 0;
