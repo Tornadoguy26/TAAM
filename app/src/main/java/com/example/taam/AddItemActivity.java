@@ -23,9 +23,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.taam.structures.Item;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 public class AddItemActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     String fileName = "";
@@ -50,9 +47,6 @@ public class AddItemActivity extends AppCompatActivity implements AdapterView.On
       
         Spinner spinnerCategory = findViewById(R.id.addScreen_SpinnerCategory);
         Spinner spinnerPeriod = findViewById(R.id.addScreen_SpinnerPeriod);
-        EditText ET_description = findViewById(R.id.addScreen_Description);
-        Button B_upload = findViewById(R.id.addScreen_UploadButton);
-        Button B_submit = findViewById(R.id.addScreen_SubmitButton);
 
         spinnerCategory.setOnItemSelectedListener(this);
         ArrayAdapter<String> adCategory = new ArrayAdapter<>(this,
@@ -69,8 +63,6 @@ public class AddItemActivity extends AppCompatActivity implements AdapterView.On
         // get the items
         EditText ET_lotNumber = findViewById(R.id.addScreen_LotNumber);
         EditText ET_name = findViewById(R.id.addScreen_Name);
-        Spinner S_category = findViewById(R.id.addScreen_SpinnerCategory);
-        Spinner S_period = findViewById(R.id.addScreen_SpinnerPeriod);
         EditText ET_description = findViewById(R.id.addScreen_Description);
         buttonUpload = findViewById(R.id.addScreen_UploadButton);
         buttonSubmit = findViewById(R.id.addScreen_SubmitButton);

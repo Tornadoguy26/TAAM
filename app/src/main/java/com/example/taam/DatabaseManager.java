@@ -79,7 +79,7 @@ public class DatabaseManager {
                                             return;
                                         }
                                         Toast.makeText(activity, "Item added. Now uploading image ...!", Toast.LENGTH_SHORT).show();
-                                        StorageReference imageRef = storageRef.child(lotNumber + "." + type);
+                                        StorageReference imageRef = storageRef.child(String.valueOf(item.getLotNumber()));
                                         UploadTask uploadTask = imageRef.putFile(fileUri);
 
                                         // If fail then ...
@@ -105,7 +105,7 @@ public class DatabaseManager {
     }
 
     public Task<Void> deleteItemImage(Item item) {
-        StorageReference itemRef = storageRef.child(item.getLotNumber() + "." + item.getImageExtension());
+        StorageReference itemRef = storageRef.child(String.valueOf(item.getLotNumber()));
         return itemRef.delete();
     }
     public void deleteItems(ArrayList<Item> items, Context applicationContext) {
@@ -136,7 +136,7 @@ public class DatabaseManager {
 
     public StorageReference getPhotoReference(Item item) {
         return storageRef.child(
-                item.getLotNumber() + "." + item.getImageExtension()
+                String.valueOf(item.getLotNumber())
         );
     }
 

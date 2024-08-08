@@ -1,19 +1,16 @@
 package com.example.taam;
 
-import android.net.Uri;
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.provider.Settings;
-
-import android.util.Log;
-
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -69,16 +66,8 @@ public class MainActivity extends AppCompatActivity {
         loginDialog = new LoginDialog(this);
         Button adminBtn = findViewById(R.id.adminLoginButton);
 
-        TextView titleText = findViewById(R.id.titleTextView);
         Button buttonAdd = findViewById(R.id.addButton);
         Button buttonRemove = findViewById(R.id.removeButton);
-        Button buttonReport = findViewById(R.id.reportButton);
-        if (isAdmin) {
-            titleText.setText(R.string.admin_screen_title);
-            buttonAdd.setVisibility(View.VISIBLE);
-            buttonRemove.setVisibility(View.VISIBLE);
-            buttonReport.setVisibility(View.VISIBLE);
-        }
 
         // Only enable admin buttons if we are admin
         LinearLayout adminLayout = findViewById(R.id.adminFeaturesLayout);
