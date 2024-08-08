@@ -1,49 +1,36 @@
 package com.example.taam;
 
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.webkit.MimeTypeMap;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import android.webkit.MimeTypeMap;
-import android.widget.*;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-
-import androidx.annotation.NonNull;
-
-import android.content.Intent;
-import android.net.Uri;
-import android.widget.ImageView;
-import android.widget.Toast;
-
 import com.example.taam.structures.Item;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-public class AddItemActivity extends AppCompatActivity
-        implements AdapterView.OnItemSelectedListener{
-    String[] categories = {"Jade", "Paintings", "Calligraphy", "Rubbings", "Bronze",
-            "Brass and Copper", "Gold and Silvers", "Lacquer", "Enamels"};
-    String[] periods = {"Xia", "Shang", "Zhou", "Chuanqiu", "Zhanggou", "Qin", "Han",
-            "Shangou", "Ji", "South and North", "Shui", "Tang", "Liao", "Song", "Jin",
-            "Yuan", "Ming", "Qing", "Modern"};
-    String filename;
-    Uri filepath;
+public class AddItemActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    String fileName = "";
+    Uri fileUri;
+    Button buttonUpload;
+    Button buttonSubmit;
+    Button buttonBack;
+  
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,92 +43,75 @@ public class AddItemActivity extends AppCompatActivity
             return insets;
         });
 
-
+        DatabaseManager databaseManager = DatabaseManager.getInstance();
+      
         Spinner spinnerCategory = findViewById(R.id.addScreen_SpinnerCategory);
+        Spinner spinnerPeriod = findViewById(R.id.addScreen_SpinnerPeriod);
+
         spinnerCategory.setOnItemSelectedListener(this);
-        ArrayAdapter adCategory = new ArrayAdapter(this,
-                android.R.layout.simple_spinner_item, categories);
+        ArrayAdapter<String> adCategory = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, DatabaseManager.categories);
         adCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategory.setAdapter(adCategory);
 
-        Spinner spinnerPeriod = findViewById(R.id.addScreen_SpinnerPeriod);
         spinnerPeriod.setOnItemSelectedListener(this);
-        ArrayAdapter adPeriod = new ArrayAdapter(this,
-                android.R.layout.simple_spinner_item, periods);
+        ArrayAdapter<String> adPeriod = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, DatabaseManager.periods);
         adPeriod.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPeriod.setAdapter(adPeriod);
 
         // get the items
         EditText ET_lotNumber = findViewById(R.id.addScreen_LotNumber);
         EditText ET_name = findViewById(R.id.addScreen_Name);
-        Spinner S_category = findViewById(R.id.addScreen_SpinnerCategory);
-        Spinner S_period = findViewById(R.id.addScreen_SpinnerPeriod);
         EditText ET_description = findViewById(R.id.addScreen_Description);
-        Button B_upload = findViewById(R.id.addScreen_UploadButton);
-        Button B_submit = findViewById(R.id.addScreen_SubmitButton);
+        buttonUpload = findViewById(R.id.addScreen_UploadButton);
+        buttonSubmit = findViewById(R.id.addScreen_SubmitButton);
+        buttonBack = findViewById(R.id.addScreen_BackButton);
+        buttonBack.setOnClickListener(v -> {
+            this.finish();
+        });
+        buttonUpload.setOnClickListener(v -> imageChooser());
 
-        B_upload.setOnClickListener(v -> imageChooser());
-
-        B_submit.setOnClickListener(v -> {
+        buttonSubmit.setOnClickListener(v -> {
 //                Take all input texts
 //                Upload it to firebase database (realtime)
-//                Upload the image to firebase cloud storage wit hthe name <id>.<ext>
-
+//                Upload the image to firebase cloud storage wit the name <id>.<ext>
 
             String lotNumber = ET_lotNumber.getText().toString();
             String name = ET_name.getText().toString();
-            String category = S_category.getSelectedItem().toString();
-            String period = S_period.getSelectedItem().toString();
+            String category = spinnerCategory.getSelectedItem().toString();
+            String period = spinnerPeriod.getSelectedItem().toString();
             String description = ET_description.getText().toString();
+
             if(name.isEmpty() || category.isEmpty() || period.isEmpty() ||
                     description.isEmpty() || lotNumber.isEmpty()) {
-                Toast.makeText(AddItemActivity.this, "Invalid Inputs! Please fill " +
+                Toast.makeText(this, "Invalid Inputs! Please fill " +
                         "all the fields", Toast.LENGTH_SHORT).show();
             }
             else {
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference();
+                // make pop up confirmation
+                new AlertDialog.Builder(this)
+                        .setTitle("Add Confirmation")
+                        .setMessage("Are you sure you want to add this item?")
+                        // database
+                        .setPositiveButton(android.R.string.yes, (dialog, which) -> {
 
-                // Read from the database
-                myRef.child("Items").child(lotNumber).get().addOnCompleteListener(task -> {
-                    if (!task.isSuccessful()) {
-                        Toast.makeText(AddItemActivity.this, "An error has occurred when adding the object", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        Item itemFound = task.getResult().getValue(Item.class);
-                        if(task.getResult().exists()) {
-                            Toast.makeText(AddItemActivity.this, "Item" +
-                                    "with the same lot number already exists", Toast.LENGTH_SHORT).show();
-                        }
-                        else {
-                            Item new_item = new Item(Integer.parseInt(lotNumber), name, category, period,
+                            Item new_item = new Item(Integer.parseInt(lotNumber),
+                                    name,
+                                    category,
+                                    period,
                                     description);
-                            myRef.child("Items").child(lotNumber).setValue(new_item);
-                            FirebaseStorage storage = FirebaseStorage.getInstance();
+                            databaseManager.addItem(new_item, fileUri, this);
+                        }).setNegativeButton(android.R.string.no, (dialog, which) -> {
+                            // User cancelled, do nothing
+                            dialog.dismiss();
+                        })
+                        .setIcon(android.R.drawable.ic_input_add)
+                        .show();
 
-
-                            StorageReference storageRef = storage.getReference();
-                            String type = getFileExtension(AddItemActivity.this, filepath);
-                            StorageReference imageRef = storageRef.child(lotNumber + "." + type);
-
-                            UploadTask uploadTask = imageRef.putFile(filepath);
-
-// Register observers to listen for when the download is done or if it fails
-                            uploadTask.addOnFailureListener(exception -> {
-                                // Handle unsuccessful uploads
-                                Toast.makeText(AddItemActivity.this, "Failed to upload image!", Toast.LENGTH_SHORT).show();
-                            }).addOnSuccessListener(taskSnapshot -> Toast.makeText(AddItemActivity.this, "Image has been uploaded!", Toast.LENGTH_SHORT).show());
-                        }
-                        finish();
-                    }
-                });
-
-
-//
             }
 
         });
-
     }
     public static String getFileExtension(Context context, Uri uri) {
         String extension = null;
@@ -171,12 +141,14 @@ public class AddItemActivity extends AppCompatActivity
         // create an instance of the
         // intent of the type image
         Intent i = new Intent();
-        i.setType("image/*");
-        i.setAction(Intent.ACTION_GET_CONTENT);
+        Intent intent = new Intent();
+        intent.setType("*/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
 
-        // pass the constant to compare it
-        // with the returned requestCode
-        startActivityForResult(Intent.createChooser(i, "Select Picture"), 200);
+        String[] uploadTypes = {"image/*", "video/*"};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, uploadTypes);
+
+        startActivityForResult(Intent.createChooser(intent, "Select Media File"), 200);
     }
 
 
@@ -195,8 +167,9 @@ public class AddItemActivity extends AppCompatActivity
                     preview.setVisibility(View.VISIBLE);
                     // update the preview image in the layout
                     preview.setImageURI(selectedImageUri);
-                    this.filepath = selectedImageUri;
-                    this.filename = selectedImageUri.toString();
+                    this.fileUri = selectedImageUri;
+                    this.fileName = selectedImageUri.toString();
+                    this.buttonUpload.setText(fileUri.getPath());
                 }
             }
         }

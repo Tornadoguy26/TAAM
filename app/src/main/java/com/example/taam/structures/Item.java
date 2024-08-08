@@ -35,7 +35,4 @@ public class Item implements Serializable {
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
-
-    public String getImageExtension() { return imageExtension; }
-    public void setImageExtension(String imageExtension) { this.imageExtension = imageExtension; }
 }

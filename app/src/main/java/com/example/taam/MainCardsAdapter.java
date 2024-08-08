@@ -1,6 +1,5 @@
 package com.example.taam;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
@@ -9,13 +8,11 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.taam.structures.Item;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
@@ -27,7 +24,6 @@ public class MainCardsAdapter extends RecyclerView.Adapter<MainCardsAdapter.View
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private final StorageReference storageReference;
         private final TextView nameTextView;
         private final TextView descTextView;
         private final ImageView imageView;
@@ -51,7 +47,6 @@ public class MainCardsAdapter extends RecyclerView.Adapter<MainCardsAdapter.View
             });
              */
 
-            storageReference = FirebaseStorage.getInstance().getReference();
         }
         public TextView getNameTextView() { return nameTextView; }
         public TextView getDescTextView() { return descTextView; }
@@ -87,16 +82,15 @@ public class MainCardsAdapter extends RecyclerView.Adapter<MainCardsAdapter.View
         holder.getCheckBox().setChecked(checkedItems.contains( mDataSet.get(position)) );
 
         holder.getCheckBox().setOnCheckedChangeListener((compoundButton, b) -> {
-            if (b) { checkedItems.add(mDataSet.get(holder.getAdapterPosition())); }
-            else { checkedItems.remove(mDataSet.get(holder.getAdapterPosition())); }
+            if (b) { checkedItems.add(mDataSet.get(holder.getBindingAdapterPosition())); }
+            else { checkedItems.remove(mDataSet.get(holder.getBindingAdapterPosition())); }
         });
 
         final long ONE_MEGABYTE = 1024 * 1024;
-        StorageReference photoReference = holder.storageReference.child(
-                mDataSet.get(holder.getAdapterPosition()).getLotNumber() + ".png"
+        StorageReference photoReference = DatabaseManager.getInstance().getPhotoReference(
+                mDataSet.get(holder.getBindingAdapterPosition())
         );
-
-        photoReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+        photoReference.getBytes(3 * ONE_MEGABYTE).addOnSuccessListener(bytes -> {
             Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             holder.getImageView().setImageBitmap(bmp);
 

@@ -1,19 +1,16 @@
 package com.example.taam;
 
-import android.net.Uri;
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.provider.Settings;
-
-import android.util.Log;
-
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -50,6 +47,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         // Database Manager Instance
         DatabaseManager databaseManager = DatabaseManager.getInstance();
@@ -58,17 +60,15 @@ public class MainActivity extends AppCompatActivity {
         isAdmin = getIntent().getBooleanExtra("admin_status", false);
         Log.d("[TAAM]", "isAdmin: " + isAdmin);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
         //==================================================================================
 
         // Create dialog used for login
         loginDialog = new LoginDialog(this);
         Button adminBtn = findViewById(R.id.adminLoginButton);
+
+        Button buttonAdd = findViewById(R.id.addButton);
+        Button buttonRemove = findViewById(R.id.removeButton);
+        Button reportButton = findViewById(R.id.reportButton);
 
         // Only enable admin buttons if we are admin
         LinearLayout adminLayout = findViewById(R.id.adminFeaturesLayout);
@@ -77,16 +77,24 @@ public class MainActivity extends AppCompatActivity {
             child.setEnabled(isAdmin);
         }
 
+        if (!isAdmin) {
+            buttonAdd.setVisibility(View.GONE);
+            buttonRemove.setVisibility(View.GONE);
+            reportButton.setVisibility(View.GONE);
+        }
+
+        if (isAdmin) {
+            buttonAdd.setVisibility(View.VISIBLE);
+            buttonRemove.setVisibility(View.VISIBLE);
+            reportButton.setVisibility(View.VISIBLE);
+        }
+
         // If we are logged in, change button so we can log out
         if (isAdmin) adminBtn.setText(R.string.back_text);
         adminBtn.setOnClickListener(v -> {
             if (isAdmin) { switchAdminStatus(false); }
             else { loginDialog.show(); }
         });
-
-        // Change title of menu based on admin status
-        TextView titleText = findViewById(R.id.titleTextView);
-        if (isAdmin) titleText.setText(R.string.admin_screen_title);
 
         // Create search dialog to be shown on button press
         searchDialog = new SearchDialog(this);
@@ -100,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Open new activity for adding items
-        Button buttonAdd = findViewById(R.id.addButton);
         buttonAdd.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, AddItemActivity.class);
             startActivity(intent);
@@ -141,7 +148,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Remove all the selected items
-        Button buttonRemove = findViewById(R.id.removeButton);
         buttonRemove.setOnClickListener(v -> {
             if(mainCardsAdapter.getCheckedItems().isEmpty()) return;
             // Make alert confirmation
@@ -151,21 +157,15 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                     databaseManager.deleteItems(mainCardsAdapter.getCheckedItems(), getApplicationContext());
                     mainCardsAdapter.clearCheckedItems();
-                }).setNegativeButton(android.R.string.cancel, (dialog, which) -> {
-                    dialog.dismiss();
-                }).setIcon(android.R.drawable.ic_dialog_alert).show();
+                }).setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.dismiss()).setIcon(android.R.drawable.ic_dialog_alert).show();
         });
 
 
         // Dialog to generate report
         reportDialog = new ReportDialog(this);
-        Button reportButton = findViewById(R.id.reportButton);
-        reportButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!Environment.isExternalStorageManager()) { requestStoragePermission(); }
-                reportDialog.show(itemDataSet);
-            }
+        reportButton.setOnClickListener(v -> {
+            if (!Environment.isExternalStorageManager()) { requestStoragePermission(); }
+            reportDialog.show(itemDataSet);
         });
 
     }
