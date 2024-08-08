@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -149,7 +150,10 @@ public class MainActivity extends AppCompatActivity {
 
         // Remove all the selected items
         buttonRemove.setOnClickListener(v -> {
-            if(mainCardsAdapter.getCheckedItems().isEmpty()) return;
+            if(mainCardsAdapter.getCheckedItems().isEmpty()) {
+                Toast.makeText(getApplicationContext(), "No items selected", Toast.LENGTH_SHORT).show();
+                return;
+            }
             // Make alert confirmation
             new AlertDialog.Builder(this)
                 .setTitle("Delete Confirmation")

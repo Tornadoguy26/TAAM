@@ -61,7 +61,7 @@ public class PdfPresenter {
             for (int i = 0; i < items.size(); i++) {
                 Item item = items.get(i);
                 StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-                StorageReference imageFile = storageReference.child(item.getLotNumber() + ".png");
+                StorageReference imageFile = storageReference.child(item.getLotNumber() + "");
                 Task<Void> task = removeIfNoImage(indices, i, imageFile);
                 tasks.add(task);
             }
@@ -96,7 +96,7 @@ public class PdfPresenter {
         for (int i = 0; i < items.size(); i++) {
             Item item = items.get(i);
             StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-            StorageReference imageRef = storageReference.child(item.getLotNumber() + ".png");
+            StorageReference imageRef = storageReference.child(item.getLotNumber() + "");
             Task<Void> task = getBitmap(bitmaps, i, imageRef);
             tasks.add(task);
         }
