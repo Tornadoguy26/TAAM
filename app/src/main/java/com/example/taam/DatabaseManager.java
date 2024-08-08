@@ -26,9 +26,9 @@ public class DatabaseManager {
 
     public final static String[] categories, periods;
     static {
-        categories = new String[]{"Clear", "Jade", "Paintings", "Calligraphy", "Rubbings", "Bronze",
+        categories = new String[]{"Jade", "Paintings", "Calligraphy", "Rubbings", "Bronze",
                 "Brass and Copper", "Gold and Silvers", "Lacquer", "Enamels"};
-        periods = new String[]{"Clear", "Xia", "Shang", "Zhou", "Chuanqiu", "Zhanggou", "Qin", "Han",
+        periods = new String[]{"Xia", "Shang", "Zhou", "Chuanqiu", "Zhanggou", "Qin", "Han",
                 "Shangou", "Ji", "South and North", "Shui", "Tang", "Liao", "Song", "Jin",
                 "Yuan", "Ming", "Qing", "Modern"};
     }
@@ -53,11 +53,11 @@ public class DatabaseManager {
     }
 
     public Task<Void> deleteItemImage(Item item) {
-        StorageReference itemRef = storageRef.child(item.getLotNumber() + item.getImageExtension());
+        StorageReference itemRef = storageRef.child(item.getLotNumber() + "." + item.getImageExtension());
         return itemRef.delete();
     }
     public void deleteItems(ArrayList<Item> items, Context applicationContext) {
-        List<Task <Void>> tasks = new ArrayList<Task<Void>>();
+        List<Task <Void>> tasks = new ArrayList<>();
 
         for (int i = 0; i < items.size(); i++) {
             Task<Void> deleteItemTask = deleteItemInfo(items.get(i));
@@ -71,16 +71,21 @@ public class DatabaseManager {
             deleteItemImage(items.get(i));
         }
 
-        Tasks.whenAll(tasks).addOnCompleteListener(task -> {
-            Toast.makeText(applicationContext, "Selected items have been removed", Toast.LENGTH_SHORT).show();
-        });
+        Tasks.whenAll(tasks).addOnCompleteListener(task -> Toast.makeText(applicationContext, "Selected items have been removed", Toast.LENGTH_SHORT).show());
     }
 
     public Task<AuthResult> loginQuery(String email, String password) {
         return auth.signInWithEmailAndPassword(email, password);
     }
 
+    public StorageReference getPhotoReference(Item item) {
+        return storageRef.child(
+                item.getLotNumber() + "." + item.getImageExtension()
+        );
+    }
+
     public DatabaseReference getDbRef() { return dbRef; }
+    public StorageReference getStorageRef() { return storageRef; }
 
 }
 

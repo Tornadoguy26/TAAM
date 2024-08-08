@@ -9,18 +9,13 @@ import android.util.Log;
 import android.widget.Toast;
 import android.graphics.Canvas;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.taam.structures.Item;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
@@ -136,7 +131,6 @@ public class PdfPresenter {
 
                     // Multi-line description
                     int y = 125;
-                    String description = item.getDescription();
                     String[] desc = item.getDescription().split(" ");
                     StringBuilder line = new StringBuilder();
                     for (String word : desc) {
@@ -199,22 +193,16 @@ public class PdfPresenter {
         try {
             File localFile = File.createTempFile("images", "jpg");
             Log.d("MainPresenter", "Temp file created");
-            imageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    // File exists
-                    Log.d("MainPresenter", "Download success");
-                    // Decode the file into a Bitmap
-                    bitmaps[finalI] = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                    taskCompletionSource.setResult(null); // Mark the task as complete
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(Exception exception) {
-                    bitmaps[finalI] = null;
-                    Log.e(TAG, "No image", exception);
-                    taskCompletionSource.setResult(null); // Mark the task as complete
-                }
+            imageRef.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
+                // File exists
+                Log.d("MainPresenter", "Download success");
+                // Decode the file into a Bitmap
+                bitmaps[finalI] = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                taskCompletionSource.setResult(null); // Mark the task as complete
+            }).addOnFailureListener(exception -> {
+                bitmaps[finalI] = null;
+                Log.e(TAG, "No image", exception);
+                taskCompletionSource.setResult(null); // Mark the task as complete
             });
         } catch (IOException e) {
             bitmaps[finalI] = null;
@@ -226,19 +214,13 @@ public class PdfPresenter {
 
     public static Task<Void> removeIfNoImage(ArrayList<Integer> indices, final int finalI, StorageReference imageRef) {
         TaskCompletionSource<Void> taskCompletionSource = new TaskCompletionSource<>();
-        imageRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
-            @Override
-            public void onSuccess(StorageMetadata metadata) {
-                // File exists
-                taskCompletionSource.setResult(null); // Mark the task as complete
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // File does not exist
-                indices.add(finalI);
-                taskCompletionSource.setResult(null); // Mark the task as complete
-            }
+        imageRef.getMetadata().addOnSuccessListener(metadata -> {
+            // File exists
+            taskCompletionSource.setResult(null); // Mark the task as complete
+        }).addOnFailureListener(exception -> {
+            // File does not exist
+            indices.add(finalI);
+            taskCompletionSource.setResult(null); // Mark the task as complete
         });
         return taskCompletionSource.getTask();
     }

@@ -50,6 +50,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         // Database Manager Instance
         DatabaseManager databaseManager = DatabaseManager.getInstance();
@@ -57,12 +62,6 @@ public class MainActivity extends AppCompatActivity {
         // Get the admin status from intent
         isAdmin = getIntent().getBooleanExtra("admin_status", false);
         Log.d("[TAAM]", "isAdmin: " + isAdmin);
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         //==================================================================================
 
@@ -151,21 +150,16 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                     databaseManager.deleteItems(mainCardsAdapter.getCheckedItems(), getApplicationContext());
                     mainCardsAdapter.clearCheckedItems();
-                }).setNegativeButton(android.R.string.cancel, (dialog, which) -> {
-                    dialog.dismiss();
-                }).setIcon(android.R.drawable.ic_dialog_alert).show();
+                }).setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.dismiss()).setIcon(android.R.drawable.ic_dialog_alert).show();
         });
 
 
         // Dialog to generate report
         reportDialog = new ReportDialog(this);
         Button reportButton = findViewById(R.id.reportButton);
-        reportButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!Environment.isExternalStorageManager()) { requestStoragePermission(); }
-                reportDialog.show(itemDataSet);
-            }
+        reportButton.setOnClickListener(v -> {
+            if (!Environment.isExternalStorageManager()) { requestStoragePermission(); }
+            reportDialog.show(itemDataSet);
         });
 
     }

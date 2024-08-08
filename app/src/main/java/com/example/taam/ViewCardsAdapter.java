@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.taam.structures.Item;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
@@ -23,7 +22,6 @@ public class ViewCardsAdapter extends RecyclerView.Adapter<ViewCardsAdapter.View
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private final StorageReference storageReference;
         private final TextView lotNumTextView;
         private final TextView nameTextView;
         private final TextView categoryTextView;
@@ -40,8 +38,6 @@ public class ViewCardsAdapter extends RecyclerView.Adapter<ViewCardsAdapter.View
             periodTextView = v.findViewById(R.id.periodTextView);
             descTextView = v.findViewById(R.id.descTextView);
             imageView = v.findViewById(R.id.imageView);
-
-            storageReference = FirebaseStorage.getInstance().getReference();
         }
         public TextView getLotNumTextView() { return lotNumTextView; }
         public TextView getNameTextView() { return nameTextView; }
@@ -78,11 +74,11 @@ public class ViewCardsAdapter extends RecyclerView.Adapter<ViewCardsAdapter.View
         holder.getDescTextView().setText(mDataSet.get(position).getDescription());
 
         final long ONE_MEGABYTE = 1024 * 1024;
-        StorageReference photoReference = holder.storageReference.child(
-                mDataSet.get(holder.getAdapterPosition()).getLotNumber() + ".png"
+        StorageReference photoReference = DatabaseManager.getInstance().getPhotoReference(
+                mDataSet.get(holder.getBindingAdapterPosition())
         );
 
-        photoReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+        photoReference.getBytes(3 * ONE_MEGABYTE).addOnSuccessListener(bytes -> {
             Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             holder.getImageView().setImageBitmap(bmp);
 

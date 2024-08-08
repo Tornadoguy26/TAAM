@@ -13,12 +13,13 @@ public class Item implements Serializable {
     // Necessary for firebase conversion
     public Item() {}
 
-    public Item(int lotNumber, String name, String category, String period, String description) {
+    public Item(int lotNumber, String name, String category, String period, String description, String imageExtension) {
         this.lotNumber = lotNumber;
         this.name = name;
         this.category = category;
         this.period = period;
         this.description = description;
+        this.imageExtension = imageExtension;
     }
 
     public int getLotNumber() { return lotNumber; }
