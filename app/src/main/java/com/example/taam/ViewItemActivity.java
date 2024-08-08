@@ -40,9 +40,7 @@ public class ViewItemActivity extends AppCompatActivity {
         recyclerView.setAdapter(viewCardsAdapter);
 
         Button backBtn = findViewById(R.id.backButton);
-        backBtn.setOnClickListener(view -> {
-            finish();
-        });
+        backBtn.setOnClickListener(view -> finish());
     }
 
 }

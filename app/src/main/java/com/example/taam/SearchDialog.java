@@ -135,17 +135,17 @@ public class SearchDialog {
     }
     public void removeName(@NonNull ArrayList<Item> items, String x){
         if(!x.isEmpty()) {
-            items.removeIf(item -> !x.equals(item.getName()));
+            items.removeIf(item -> !item.getName().toLowerCase().contains(x.toLowerCase()));
         }
     }
     public void removePeriod(@NonNull ArrayList<Item> items, String x) {
         if(!x.isEmpty()) {
-            items.removeIf(item -> !x.equals(item.getPeriod()));
+            items.removeIf(item -> !x.equalsIgnoreCase(item.getPeriod()));
         }
     }
     public void removeCategory(@NonNull ArrayList<Item> items, String x) {
         if(!x.isEmpty()) {
-            items.removeIf(item -> !x.equals(item.getCategory()));
+            items.removeIf(item -> !x.equalsIgnoreCase(item.getCategory()));
         }
     }
 

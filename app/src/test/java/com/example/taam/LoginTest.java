@@ -33,14 +33,17 @@ public class LoginTest {
     private MainActivity mockMainActivity;
 
     @Mock
-    private LoginModel mockLoginModel;
+    private LoginDialog mockLoginView;
+
+    @Mock
+    private DatabaseManager mockLoginModel;
 
     private LoginPresenter loginPresenter;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        loginPresenter = new LoginPresenter(mockMainActivity, mockLoginModel);
+        loginPresenter = new LoginPresenter(mockLoginView, mockLoginModel);
     }
 
     @Test
@@ -49,7 +52,7 @@ public class LoginTest {
 
         loginPresenter.login(user);
 
-        verify(mockMainActivity).onLoginFailure();
+        verify(mockLoginView).onLoginFailure();
     }
 
     @Test
@@ -58,7 +61,7 @@ public class LoginTest {
 
         loginPresenter.login(user);
 
-        verify(mockMainActivity).onLoginFailure();
+        verify(mockLoginView).onLoginFailure();
     }
 
     @Test
@@ -71,7 +74,7 @@ public class LoginTest {
 
         ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
 
-        verify(mockMainActivity).onLoginSuccess();
+        verify(mockLoginView).onLoginSuccess();
         verify(mockMainActivity).switchAdminStatus(true);
     }
 
@@ -85,6 +88,6 @@ public class LoginTest {
 
         ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
 
-        verify(mockMainActivity).onLoginFailure();
+        verify(mockLoginView).onLoginFailure();
     }
 }
