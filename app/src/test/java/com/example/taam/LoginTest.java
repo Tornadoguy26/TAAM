@@ -30,9 +30,6 @@ import com.google.firebase.auth.AuthResult;
 public class LoginTest {
 
     @Mock
-    private MainActivity mockMainActivity;
-
-    @Mock
     private LoginDialog mockLoginView;
 
     @Mock
@@ -75,7 +72,7 @@ public class LoginTest {
         ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
 
         verify(mockLoginView).onLoginSuccess();
-        verify(mockMainActivity).switchAdminStatus(true);
+        verify(mockLoginView).switchAdminStatus(true);
     }
 
     @Test
