@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">TAAM</string>
     <string name="loading">Loading…</string>
-    <string name="main_screen_title">Toronto Asian Art Museum Collections Management</string>
+    <string name="main_screen_title">Toronto Asian Art Museum\n Collections Management</string>
     <string name="admin_screen_title">Collection Management</string>
     <string-array name="report_options">
         <item>Select All Items</item>

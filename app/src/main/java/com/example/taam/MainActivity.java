@@ -69,6 +69,17 @@ public class MainActivity extends AppCompatActivity {
         loginDialog = new LoginDialog(this);
         Button adminBtn = findViewById(R.id.adminLoginButton);
 
+        TextView titleText = findViewById(R.id.titleTextView);
+        Button buttonAdd = findViewById(R.id.addButton);
+        Button buttonRemove = findViewById(R.id.removeButton);
+        Button buttonReport = findViewById(R.id.reportButton);
+        if (isAdmin) {
+            titleText.setText(R.string.admin_screen_title);
+            buttonAdd.setVisibility(View.VISIBLE);
+            buttonRemove.setVisibility(View.VISIBLE);
+            buttonReport.setVisibility(View.VISIBLE);
+        }
+
         // Only enable admin buttons if we are admin
         LinearLayout adminLayout = findViewById(R.id.adminFeaturesLayout);
         for (int i = 0; i < adminLayout.getChildCount(); i++) {
@@ -83,10 +94,6 @@ public class MainActivity extends AppCompatActivity {
             else { loginDialog.show(); }
         });
 
-        // Change title of menu based on admin status
-        TextView titleText = findViewById(R.id.titleTextView);
-        if (isAdmin) titleText.setText(R.string.admin_screen_title);
-
         // Create search dialog to be shown on button press
         searchDialog = new SearchDialog(this);
         Button searchBtn = findViewById(R.id.searchButton);
@@ -99,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Open new activity for adding items
-        Button buttonAdd = findViewById(R.id.addButton);
         buttonAdd.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, AddItemActivity.class);
             startActivity(intent);
@@ -140,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Remove all the selected items
-        Button buttonRemove = findViewById(R.id.removeButton);
         buttonRemove.setOnClickListener(v -> {
             if(mainCardsAdapter.getCheckedItems().isEmpty()) return;
             // Make alert confirmation
