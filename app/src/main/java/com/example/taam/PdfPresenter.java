@@ -10,15 +10,14 @@ import android.widget.Toast;
 import android.graphics.Canvas;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.taam.structures.Item;
-import com.example.taam.structures.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
@@ -31,33 +30,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PdfPresenter {
-    private final MainActivity mainActivity;
-    private final FirebaseAuth auth;
+    private final AppCompatActivity activity;
     private static final String TAG = "MainPresenter";
 
-    public PdfPresenter(MainActivity mainActivity) {
-        this.mainActivity = mainActivity;
-        this.auth = FirebaseAuth.getInstance();
+    public PdfPresenter(AppCompatActivity activity) {
+        this.activity = activity;
     }
 
-    public void login(User user) {
-        auth.signInWithEmailAndPassword(user.getEmail(), user.getPassword())
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        mainActivity.onLoginSuccess();
-                        mainActivity.switchAdminStatus(true);
-                    } else {
-                        mainActivity.onLoginFailure();
-                    }
-                });
-    }
 
     public void generateReport(String searchBy, String searchValue, boolean descPic, ArrayList<Item> itemDataSet) {
         ArrayList<Item> items = new ArrayList<>(itemDataSet);
 
         // Check if file already exists and create a unique filename
 
-        Toast.makeText(mainActivity, "Generating report", Toast.LENGTH_SHORT).show();
+        Toast.makeText(activity, "Generating report", Toast.LENGTH_SHORT).show();
 
         switch (searchBy) {
             case "Lot Number":
@@ -103,7 +89,7 @@ public class PdfPresenter {
 
     public void writePdf(ArrayList<Item> items) {
         if (items.isEmpty()) {
-            Toast.makeText(mainActivity, "No items found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "No items found", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -142,6 +128,7 @@ public class PdfPresenter {
                         Log.e(TAG, "Failed to create canvas");
                     }
 
+                    assert canvas != null;
                     canvas.drawText("Lot Number: " + item.getLotNumber(), 10, 25, paint);
                     canvas.drawText("Name: " + item.getName(), 10, 50, paint);
                     canvas.drawText("Category: " + item.getCategory(), 10, 75, paint);
@@ -191,10 +178,10 @@ public class PdfPresenter {
                     pdfDocument.writeTo(Files.newOutputStream(file.toPath()));
                     Log.d(TAG, "PDF file written");
                     // printing toast message on completion of PDF generation.
-                    Toast.makeText(mainActivity, "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
                     // handling error
-                    Toast.makeText(mainActivity, "Failed to generate PDF file.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, "Failed to generate PDF file.", Toast.LENGTH_SHORT).show();
                 }
 
                 // closing our PDF file.

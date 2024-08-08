@@ -104,9 +104,6 @@ public class AddItemActivity extends AppCompatActivity
                 Toast.makeText(this, "Invalid Inputs! Please fill " +
                         "all the fields", Toast.LENGTH_SHORT).show();
             }
-            else if(fileName.isEmpty() || fileName == "") {
-                Toast.makeText(this, "Please upload a media for this item", Toast.LENGTH_SHORT).show();
-            }
             else {
                 // make pop up confirmation
                 new AlertDialog.Builder(this)

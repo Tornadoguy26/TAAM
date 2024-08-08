@@ -112,5 +112,6 @@ public class MainCardsAdapter extends RecyclerView.Adapter<MainCardsAdapter.View
     }
 
     public ArrayList<Item> getCheckedItems() { return checkedItems; }
+    public void clearCheckedItems() { checkedItems.clear(); }
 
 }

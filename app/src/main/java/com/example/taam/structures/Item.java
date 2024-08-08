@@ -8,6 +8,7 @@ public class Item implements Serializable {
     private String category;
     private String period;
     private String description;
+    private String imageExtension;
 
     // Necessary for firebase conversion
     public Item() {}
@@ -35,4 +36,6 @@ public class Item implements Serializable {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
+    public String getImageExtension() { return imageExtension; }
+    public void setImageExtension(String imageExtension) { this.imageExtension = imageExtension; }
 }
