@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="398dp"
-    android:layout_height="583dp"
+    android:layout_height="683dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     app:cardElevation="10dp"
@@ -155,7 +155,7 @@
     -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="583dp"
+        android:layout_height="699dp"
         android:background="?attr/colorAccent">
 
         <TextView
@@ -182,18 +182,18 @@
             android:layout_height="wrap_content"
             android:layout_margin="29dp"
             android:layout_marginBottom="50dp"
-            app:layout_constraintTop_toBottomOf="@id/SearchHeader"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/SearchHeader">
 
             <EditText
                 android:id="@+id/LotNum"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/logintext"
-                android:inputType="numberSigned"
                 android:ems="10"
                 android:hint="Type Lot#"
+                android:inputType="numberSigned"
                 android:text="" />
 
 
@@ -205,9 +205,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="29dp"
             android:layout_marginBottom="50dp"
-            app:layout_constraintTop_toBottomOf="@id/LotLayout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/LotLayout">
 
             <EditText
                 android:id="@+id/LotName"
@@ -239,7 +239,7 @@
                 android:ems="10"
                 android:hint="Select Category"
                 android:inputType="none"
-                android:text=""/>
+                android:text="" />
 
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -263,8 +263,30 @@
                 android:ems="10"
                 android:hint="Select Period"
                 android:inputType="none"
-                android:text=""/>
+                android:text="" />
 
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/SortLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="29dp"
+            android:layout_marginTop="29dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/PeriodLayout">
+
+            <AutoCompleteTextView
+                android:id="@+id/SortText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/logintext"
+                android:ems="10"
+                android:hint="Optional Sort By"
+                android:inputType="none"
+                android:text="" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -278,10 +300,10 @@
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.05"
+            app:layout_constraintHorizontal_bias="0.055"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.953" />
+            app:layout_constraintVertical_bias="0.958" />
 
         <Button
             android:id="@+id/ResultButton"
@@ -296,7 +318,7 @@
             app:layout_constraintHorizontal_bias="0.898"
             app:layout_constraintStart_toEndOf="@+id/BackButton"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.952" />
+            app:layout_constraintVertical_bias="0.958" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
